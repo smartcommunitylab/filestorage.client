@@ -46,10 +46,7 @@ public class RestCaller {
 		if (response.getStatusLine().getStatusCode() == 200) {
 			String responseValue = extractResponseValue(response.getEntity()
 					.getContent());
-			boolean isJson = response.getEntity().getContentType().getValue()
-					.contains("application/json");
-
-			return convertObject(responseValue, responseClass, isJson);
+			return convertObject(responseValue, responseClass);
 		}
 
 		return null;
@@ -64,9 +61,9 @@ public class RestCaller {
 		if (response.getStatusLine().getStatusCode() == 200) {
 			String json = extractResponseValue(response.getEntity()
 					.getContent());
-			boolean isJson = response.getEntity().getContentType().getValue()
-					.contains("application/json");
-			return convertObject(json, responseClass, isJson);
+			if (json != null && json.length() > 0) {
+				return convertObject(json, responseClass);
+			}
 		}
 
 		return null;
@@ -82,9 +79,7 @@ public class RestCaller {
 		if (response.getStatusLine().getStatusCode() == 200) {
 			String json = extractResponseValue(response.getEntity()
 					.getContent());
-			boolean isJson = response.getEntity().getContentType().getValue()
-					.contains("application/json");
-			return convertObject(json, responseClass, isJson);
+			return convertObject(json, responseClass);
 		}
 
 		return null;
@@ -129,10 +124,15 @@ public class RestCaller {
 		request = attachEntity(request, bodyObject, resource,
 				multipartParamName);
 
-		for (HttpHeader header : headers) {
-			request.addHeader(header.getName(), header.getValue());
+		if (headers != null) {
+			for (HttpHeader header : headers) {
+				request.addHeader(header.getName(), header.getValue());
+			}
 		}
-
+		// add Accept: application/json header
+		if (!request.containsHeader("Accept")) {
+			request.addHeader("Accept", "application/json");
+		}
 		DefaultHttpClient client = new DefaultHttpClient();
 		HttpResponse response = client.execute(request);
 		return response;
@@ -144,9 +144,9 @@ public class RestCaller {
 				.constructCollectionType(List.class, classType));
 	}
 
-	private <T> T convertObject(String json, Class<T> classType, boolean isJson)
+	private <T> T convertObject(String json, Class<T> classType)
 			throws JsonParseException, JsonMappingException, IOException {
-		if (isJson) {
+		if (json.startsWith("{") || json.startsWith("[")) {
 			return mapper.readValue(json, classType);
 		} else {
 			return (T) ConvertUtils.convert(json, classType);
