@@ -25,7 +25,8 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * User storage account informations
+ * <i>UserAccount</i> contains all the informations about a user storage
+ * account. A UserAccount is binded to a {@link AppAccount}.
  * 
  * @author mirko perillo
  * 
@@ -46,10 +47,17 @@ public class UserAccount {
 	 */
 	private String appAccountId;
 
+	/**
+	 * application name binded to user storage account
+	 */
 	private String appName;
-
+	/**
+	 * Type of storage
+	 */
 	private StorageType storageType;
-
+	/**
+	 * name to represent the user storage account
+	 */
 	private String accountName;
 	/**
 	 * list of the configurations of the account storage

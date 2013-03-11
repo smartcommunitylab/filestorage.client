@@ -22,6 +22,16 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ * <i>Token</i> contains all the informations to download a resource. A resource
+ * can be download using REST if fields url and methodREST are setted. Field
+ * httpHeaders is setted if REST invocation MUST declare some HTTP headers. If
+ * REST invocation is not available to download the resource, map metadata
+ * contains all parameters to perform download using storage type APIs
+ * 
+ * @author mirko perillo
+ * 
+ */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Token {

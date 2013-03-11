@@ -27,6 +27,12 @@ import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
+/**
+ * Utility class to perfom REST invocations
+ * 
+ * @author mirko perillo
+ * 
+ */
 public class RestCaller {
 
 	private static final Logger logger = Logger.getLogger(RestCaller.class);

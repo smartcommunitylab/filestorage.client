@@ -21,6 +21,12 @@ import eu.trentorise.smartcampus.filestorage.client.model.Resource;
 import eu.trentorise.smartcampus.filestorage.client.model.Token;
 import eu.trentorise.smartcampus.filestorage.client.utils.Utils;
 
+/**
+ * Abstract utility class to download a resource given the {@link Token}
+ * 
+ * @author mirko perillo
+ * 
+ */
 public abstract class ResourceRetriever {
 
 	private Filestorage filestorage;

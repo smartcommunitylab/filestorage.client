@@ -8,12 +8,33 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ * <i>ApplicationAccount</i> defines all the informations about a storage
+ * application account. A storage application account defines a type of storage
+ * for a defined application. Every storage application account can be related
+ * to many user storage accounts.
+ * 
+ * @author mirko perillo
+ * 
+ */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class AppAccount {
+	/**
+	 * id of the application account
+	 */
 	private String id;
+	/**
+	 * application name binded to the application storage account
+	 */
 	private String appName;
+	/**
+	 * name to represent the account
+	 */
 	private String appAccountName;
+	/**
+	 * type of the storage. See {@link StorageType} for supported storages
+	 */
 	private StorageType storageType;
 
 	@XmlElementWrapper

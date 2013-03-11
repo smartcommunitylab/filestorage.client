@@ -17,6 +17,12 @@ import eu.trentorise.smartcampus.filestorage.client.model.UserAccount;
 import eu.trentorise.smartcampus.filestorage.client.retriever.HttpResourceRetriever;
 import eu.trentorise.smartcampus.filestorage.client.retriever.ResourceRetriever;
 
+/**
+ * Filestorage APIs
+ * 
+ * @author mirko perillo
+ * 
+ */
 public class Filestorage {
 	private static final Logger logger = Logger.getLogger(Filestorage.class);
 
@@ -28,6 +34,13 @@ public class Filestorage {
 	private static final String contextPath = "smartcampus.filestorage";
 	private static final String AUTH_HEADER = "AUTH_TOKEN";
 
+	/**
+	 * 
+	 * @param baseUrl
+	 *            the http base url of the service
+	 * @param appName
+	 *            name of the applicatino
+	 */
 	public Filestorage(String baseUrl, String appName) {
 		this.appName = appName;
 		this.baseUrl = baseUrl;
@@ -36,6 +49,18 @@ public class Filestorage {
 		serviceUrl += contextPath;
 	}
 
+	/**
+	 * stores a resource in given user storage account
+	 * 
+	 * @param resource
+	 *            the resource to store
+	 * @param authToken
+	 *            the authentication token
+	 * @param userAccountId
+	 *            id of the user storage account in which store the resource
+	 * @return the id of stored resource
+	 * @throws FilestorageException
+	 */
 	public String storeResource(File resource, String authToken,
 			String userAccountId) throws FilestorageException {
 		HttpHeader header = new HttpHeader(AUTH_HEADER, authToken);
@@ -49,19 +74,17 @@ public class Filestorage {
 		}
 	}
 
-	// public String storeResource(byte[] content, String contentType,
-	// String resourceName, String authToken, String userAccountId) {
-	// HttpHeader header = new HttpHeader(AUTH_HEADER, authToken);
-	// try {
-	// restCaller.callOneResult(RequestType.POST, serviceUrl
-	// + "/resource/" + appName + "/" + userAccountId,
-	// Arrays.asList(header), null, "file", String.class);
-	// } catch (Exception e) {
-	//
-	// }
-	// return null;
-	// }
-
+	/**
+	 * deletes a resource
+	 * 
+	 * @param authToken
+	 *            the authentication token
+	 * @param userAccountId
+	 *            id of the user storage account
+	 * @param resourceId
+	 *            if of resource to remove
+	 * @throws FilestorageException
+	 */
 	public void deleteResource(String authToken, String userAccountId,
 			String resourceId) throws FilestorageException {
 		HttpHeader header = new HttpHeader(AUTH_HEADER, authToken);
@@ -75,18 +98,18 @@ public class Filestorage {
 		}
 	}
 
-	// public void updateResource(String authToken, String userAccountId,
-	// String resourceId, byte[] content) {
-	// HttpHeader header = new HttpHeader(AUTH_HEADER, authToken);
-	// try {
-	// restCaller.callOneResult(RequestType.POST, serviceUrl
-	// + "/resource/" + appName + "/" + userAccountId,
-	// Arrays.asList(header), null, "file", String.class);
-	// } catch (Exception e) {
-	//
-	// }
-	// }
-
+	/**
+	 * updates a resource
+	 * 
+	 * @param authToken
+	 *            authentication token
+	 * @param userAccountId
+	 *            id of the user storage account
+	 * @param resourceId
+	 *            id of the resource to update
+	 * @param resource
+	 *            new resource content
+	 */
 	public void updateResource(String authToken, String userAccountId,
 			String resourceId, File resource) {
 		HttpHeader header = new HttpHeader(AUTH_HEADER, authToken);
@@ -100,6 +123,12 @@ public class Filestorage {
 		}
 	}
 
+/**
+ 	 * retrieves all the user storage accounts binded to the application name and to the authentication token
+	 * @param authToken the authentication token
+	 * @return list of {@link UserAccount)
+	 * @throws FilestorageException
+	 */
 	public List<UserAccount> getUserAccounts(String authToken)
 			throws FilestorageException {
 		HttpHeader header = new HttpHeader(AUTH_HEADER, authToken);
@@ -115,6 +144,13 @@ public class Filestorage {
 
 	}
 
+	/**
+	 * retrieves all the application storage account binded to the application
+	 * name
+	 * 
+	 * @return the list of {@link AppAccount}
+	 * @throws FilestorageException
+	 */
 	public List<AppAccount> getAppAccounts() throws FilestorageException {
 		try {
 			return restCaller.callOneResult(RequestType.GET,
@@ -126,6 +162,16 @@ public class Filestorage {
 		}
 	}
 
+	/**
+	 * stores an user storage account
+	 * 
+	 * @param authToken
+	 *            authentication token
+	 * @param userAccount
+	 *            userAccount to store
+	 * @return the {@link UserAccount} stored
+	 * @throws FilestorageException
+	 */
 	public UserAccount storeUserAccount(String authToken,
 			UserAccount userAccount) throws FilestorageException {
 		HttpHeader header = new HttpHeader(AUTH_HEADER, authToken);
@@ -140,6 +186,16 @@ public class Filestorage {
 
 	}
 
+	/**
+	 * retrieves a resource
+	 * 
+	 * @param authToken
+	 *            authentication token
+	 * @param resourceId
+	 *            id of the resource
+	 * @return the {@link Resource}
+	 * @throws FilestorageException
+	 */
 	public Resource getResource(String authToken, String resourceId)
 			throws FilestorageException {
 		try {
@@ -153,6 +209,16 @@ public class Filestorage {
 
 	}
 
+	/**
+	 * retrieves the resource metadata
+	 * 
+	 * @param authToken
+	 *            authentication token
+	 * @param resourceId
+	 *            id of the resource
+	 * @return the {@link Metadata} binded to the given resource
+	 * @throws FilestorageException
+	 */
 	public Metadata getResourceMetadata(String authToken, String resourceId)
 			throws FilestorageException {
 		HttpHeader header = new HttpHeader(AUTH_HEADER, authToken);

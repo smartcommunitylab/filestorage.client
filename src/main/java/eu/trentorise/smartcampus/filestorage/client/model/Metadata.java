@@ -40,19 +40,26 @@ public class Metadata {
 	private String rid;
 
 	/**
-	 * entity id binded to resource
+	 * social id binded to resource
 	 */
 	private String eid;
 
+	/**
+	 * optional external id for the resource
+	 */
 	private String fileExternalId;
 
 	/**
 	 * account id in which resource is stored
 	 */
 	private String userAccountId;
-
+	/**
+	 * application storage account id
+	 */
 	private String appAccountId;
-
+	/**
+	 * application which resource is binded to
+	 */
 	private String appName;
 
 	/**

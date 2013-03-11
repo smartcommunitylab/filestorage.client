@@ -21,8 +21,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * <i>Configuration</i> is the representation of a configuration in a user
- * storage account
+ * <i>Configuration</i> is the representation of a configuration in a
+ * user/application storage account
  * 
  * @author mirko perillo
  * 

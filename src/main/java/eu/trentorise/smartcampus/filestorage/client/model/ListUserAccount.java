@@ -7,6 +7,12 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ * Utility class to be complaint with internal protocol of list representation
+ * 
+ * @author mirko perillo
+ * 
+ */
 @XmlRootElement(name = "userAccounts")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ListUserAccount {
