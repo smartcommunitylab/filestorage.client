@@ -267,7 +267,7 @@ public class Filestorage {
 			String entityId) throws FilestorageException {
 		HttpHeader header = new HttpHeader(AUTH_HEADER, authToken);
 		try {
-			return restCaller.callOneResult(RequestType.GET, serviceUrl
+			return restCaller.callOneResult(RequestType.PUT, serviceUrl
 					+ "/updatesocial/" + appName + "/" + resourceId + "/"
 					+ entityId, Arrays.asList(header), null, Metadata.class);
 		} catch (Exception e) {
