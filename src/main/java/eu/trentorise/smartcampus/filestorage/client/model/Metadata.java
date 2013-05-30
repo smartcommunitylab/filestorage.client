@@ -42,7 +42,7 @@ public class Metadata {
 	/**
 	 * social id binded to resource
 	 */
-	private String eid;
+	private String socialId;
 
 	/**
 	 * optional external id for the resource
@@ -66,6 +66,11 @@ public class Metadata {
 	 * MIME type of resource
 	 */
 	private String contentType;
+
+	/**
+	 * size of the resource in bytes
+	 */
+	private long size;
 
 	/**
 	 * creation time
@@ -93,12 +98,12 @@ public class Metadata {
 		this.rid = rid;
 	}
 
-	public String getEid() {
-		return eid;
+	public String getSocialId() {
+		return socialId;
 	}
 
-	public void setEid(String eid) {
-		this.eid = eid;
+	public void setSocialId(String eid) {
+		this.socialId = eid;
 	}
 
 	public String getContentType() {
@@ -155,6 +160,14 @@ public class Metadata {
 
 	public void setAppName(String appName) {
 		this.appName = appName;
+	}
+
+	public long getSize() {
+		return size;
+	}
+
+	public void setSize(long size) {
+		this.size = size;
 	}
 
 }

@@ -60,28 +60,29 @@ public class FilestorageTest {
 
 		// store resource
 		File sample = getFileSample(TestConstants.RESOURCE_NAME);
-		String resourceId = filestorage.storeResource(sample,
-				TestConstants.AUTH_TOKEN, userAccount.getId());
+		Metadata meta = filestorage.storeResource(sample,
+				TestConstants.AUTH_TOKEN, userAccount.getId(), true);
+		Assert.assertNotNull(meta.getSocialId());
 
 		// getting resource informations
-		Metadata meta = filestorage.getResourceMetadata(
-				TestConstants.AUTH_TOKEN, resourceId);
+		meta = filestorage.getResourceMetadata(TestConstants.AUTH_TOKEN,
+				meta.getRid());
 		Assert.assertEquals(TestConstants.RESOURCE_NAME, meta.getName());
 		Assert.assertEquals(TestConstants.APPNAME, meta.getAppName());
 		// getting a resource
-		Resource res = filestorage.getResource(TestConstants.AUTH_TOKEN,
-				resourceId);
+		Resource res = filestorage.getMyResource(TestConstants.AUTH_TOKEN,
+				meta.getRid());
 		Assert.assertEquals(TestConstants.RESOURCE_NAME, res.getName());
 		Assert.assertNotNull(res.getContent());
 
 		// update resource
 		filestorage.updateResource(TestConstants.AUTH_TOKEN,
-				userAccount.getId(), resourceId,
+				userAccount.getId(), meta.getRid(),
 				getFileSample(TestConstants.RESOURCE_NAME_UPDATE));
 
 		// delete resource
 		filestorage.deleteResource(TestConstants.AUTH_TOKEN,
-				userAccount.getId(), resourceId);
+				userAccount.getId(), meta.getRid());
 	}
 
 	private File getFileSample(String filename) throws URISyntaxException {

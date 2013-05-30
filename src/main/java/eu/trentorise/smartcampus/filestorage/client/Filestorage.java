@@ -54,7 +54,7 @@ public class Filestorage {
 	 * @param baseUrl
 	 *            the http base url of the service
 	 * @param appName
-	 *            name of the applicatino
+	 *            name of the application
 	 */
 	public Filestorage(String baseUrl, String appName) {
 		this.appName = appName;
@@ -73,16 +73,20 @@ public class Filestorage {
 	 *            the authentication token
 	 * @param userAccountId
 	 *            id of the user storage account in which store the resource
-	 * @return the id of stored resource
+	 * @param createSocialData
+	 *            true to create social entity associated to the resource
+	 * @return information about resources
 	 * @throws FilestorageException
 	 */
-	public String storeResource(File resource, String authToken,
-			String userAccountId) throws FilestorageException {
+	public Metadata storeResource(File resource, String authToken,
+			String userAccountId, boolean createSocialData)
+			throws FilestorageException {
 		HttpHeader header = new HttpHeader(AUTH_HEADER, authToken);
 		try {
+			String params = "?createSocialData=" + createSocialData;
 			return restCaller.callOneResult(RequestType.POST, serviceUrl
-					+ "/resource/" + appName + "/" + userAccountId,
-					Arrays.asList(header), resource, "file", String.class);
+					+ "/resource/" + appName + "/" + userAccountId + params,
+					Arrays.asList(header), resource, "file", Metadata.class);
 		} catch (Exception e) {
 			logger.error("Exception storing resource", e);
 			throw new FilestorageException(e);
@@ -202,7 +206,7 @@ public class Filestorage {
 	}
 
 	/**
-	 * retrieves a resource
+	 * retrieves a shared resource
 	 * 
 	 * @param authToken
 	 *            authentication token
@@ -211,10 +215,10 @@ public class Filestorage {
 	 * @return the {@link Resource}
 	 * @throws FilestorageException
 	 */
-	public Resource getResource(String authToken, String resourceId)
+	public Resource getSharedResource(String authToken, String resourceId)
 			throws FilestorageException {
 		try {
-			Token token = getResourceToken(authToken, resourceId);
+			Token token = getResourceToken(authToken, resourceId, false);
 			ResourceRetriever retriever = resourceRetrieverFactory(token);
 			return retriever.getResource(authToken, resourceId, token);
 		} catch (Exception e) {
@@ -222,6 +226,54 @@ public class Filestorage {
 			throw new FilestorageException(e);
 		}
 
+	}
+
+	/**
+	 * retrieves an owned resource
+	 * 
+	 * @param authToken
+	 *            authentication token
+	 * @param resourceId
+	 *            id of the resource
+	 * @return {@link Resource}
+	 * @throws FilestorageException
+	 */
+	public Resource getMyResource(String authToken, String resourceId)
+			throws FilestorageException {
+		try {
+			Token token = getResourceToken(authToken, resourceId, true);
+			ResourceRetriever retriever = resourceRetrieverFactory(token);
+			return retriever.getResource(authToken, resourceId, token);
+		} catch (Exception e) {
+			logger.error("Exception getting user accounts", e);
+			throw new FilestorageException(e);
+		}
+	}
+
+	/**
+	 * update social entity associated to the resource. Social entity MUST be
+	 * owned be the user.
+	 * 
+	 * @param authToken
+	 *            authentication token
+	 * @param resourceId
+	 *            id of the resource
+	 * @param entityId
+	 *            social entity id
+	 * @return updated information about resource
+	 * @throws FilestorageException
+	 */
+	public Metadata updateSocialData(String authToken, String resourceId,
+			String entityId) throws FilestorageException {
+		HttpHeader header = new HttpHeader(AUTH_HEADER, authToken);
+		try {
+			return restCaller.callOneResult(RequestType.GET, serviceUrl
+					+ "/updatesocial/" + appName + "/" + resourceId + "/"
+					+ entityId, Arrays.asList(header), null, Metadata.class);
+		} catch (Exception e) {
+			logger.error("Exception getting user accounts", e);
+			throw new FilestorageException(e);
+		}
 	}
 
 	/**
@@ -247,12 +299,15 @@ public class Filestorage {
 		}
 	}
 
-	private Token getResourceToken(String authToken, String resourceId)
-			throws FilestorageException {
+	private Token getResourceToken(String authToken, String resourceId,
+			boolean owned) throws FilestorageException {
 		HttpHeader header = new HttpHeader(AUTH_HEADER, authToken);
 		try {
-			return restCaller.callOneResult(RequestType.GET, serviceUrl
-					+ "/resource/" + appName + "/" + resourceId,
+
+			String functionality = owned ? "myresource" : "resource";
+
+			return restCaller.callOneResult(RequestType.GET, serviceUrl + "/"
+					+ functionality + "/" + appName + "/" + resourceId,
 					Arrays.asList(header), null, Token.class);
 		} catch (Exception e) {
 			logger.error("Exception getting user accounts", e);
