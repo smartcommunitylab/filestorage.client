@@ -27,6 +27,8 @@ import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpResponse;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -35,6 +37,7 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.impl.client.AbstractHttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonGenerationException;
@@ -59,10 +62,11 @@ public class RestCaller {
 	};
 
 	public <T> T callOneResult(RequestType type, String url,
-			List<HttpHeader> headers, Class<T> responseClass)
-			throws JsonGenerationException, JsonMappingException,
-			UnsupportedEncodingException, IOException {
-		HttpResponse response = call(type, url, headers, null, null, null);
+			List<HttpHeader> headers, Class<T> responseClass,
+			Authentication authentication) throws JsonGenerationException,
+			JsonMappingException, UnsupportedEncodingException, IOException {
+		HttpResponse response = call(type, url, headers, null, null, null,
+				authentication);
 
 		if (response.getStatusLine().getStatusCode() == 200) {
 			String responseValue = extractResponseValue(response.getEntity()
@@ -74,10 +78,11 @@ public class RestCaller {
 	}
 
 	public <T> T callOneResult(RequestType type, String url,
-			List<HttpHeader> headers, T bodyObject, Class<T> responseClass)
-			throws JsonGenerationException, JsonMappingException,
-			UnsupportedEncodingException, IOException {
-		HttpResponse response = call(type, url, headers, bodyObject, null, null);
+			List<HttpHeader> headers, T bodyObject, Class<T> responseClass,
+			Authentication authentication) throws JsonGenerationException,
+			JsonMappingException, UnsupportedEncodingException, IOException {
+		HttpResponse response = call(type, url, headers, bodyObject, null,
+				null, authentication);
 
 		if (response.getStatusLine().getStatusCode() == 200) {
 			String json = extractResponseValue(response.getEntity()
@@ -92,10 +97,11 @@ public class RestCaller {
 
 	public <T> T callOneResult(RequestType type, String url,
 			List<HttpHeader> headers, File resource, String multipartParamName,
-			Class<T> responseClass) throws JsonGenerationException,
-			JsonMappingException, UnsupportedEncodingException, IOException {
+			Class<T> responseClass, Authentication authentication)
+			throws JsonGenerationException, JsonMappingException,
+			UnsupportedEncodingException, IOException {
 		HttpResponse response = call(type, url, headers, null, resource,
-				multipartParamName);
+				multipartParamName, authentication);
 
 		if (response.getStatusLine().getStatusCode() == 200) {
 			String json = extractResponseValue(response.getEntity()
@@ -107,10 +113,11 @@ public class RestCaller {
 	}
 
 	public <T> List<T> callListResult(RequestType type, String url,
-			List<HttpHeader> headers, Class<T> responseClass)
-			throws JsonGenerationException, JsonMappingException,
-			UnsupportedEncodingException, IOException {
-		HttpResponse response = call(type, url, headers, null, null, null);
+			List<HttpHeader> headers, Class<T> responseClass,
+			Authentication authentication) throws JsonGenerationException,
+			JsonMappingException, UnsupportedEncodingException, IOException {
+		HttpResponse response = call(type, url, headers, null, null, null,
+				authentication);
 
 		if (response.getStatusLine().getStatusCode() == 200) {
 			String json = extractResponseValue(response.getEntity()
@@ -122,10 +129,11 @@ public class RestCaller {
 	}
 
 	public <T> List<T> callListResult(RequestType type, String url,
-			List<HttpHeader> headers, T bodyObject, Class<T> responseClass)
-			throws JsonGenerationException, JsonMappingException,
-			UnsupportedEncodingException, IOException {
-		HttpResponse response = call(type, url, headers, bodyObject, null, null);
+			List<HttpHeader> headers, T bodyObject, Class<T> responseClass,
+			Authentication authentication) throws JsonGenerationException,
+			JsonMappingException, UnsupportedEncodingException, IOException {
+		HttpResponse response = call(type, url, headers, bodyObject, null,
+				null, authentication);
 
 		if (response.getStatusLine().getStatusCode() == 200) {
 			String json = extractResponseValue(response.getEntity()
@@ -138,8 +146,9 @@ public class RestCaller {
 
 	private <T> HttpResponse call(RequestType type, String url,
 			List<HttpHeader> headers, T bodyObject, File resource,
-			String multipartParamName) throws JsonGenerationException,
-			JsonMappingException, UnsupportedEncodingException, IOException {
+			String multipartParamName, Authentication authentication)
+			throws JsonGenerationException, JsonMappingException,
+			UnsupportedEncodingException, IOException {
 
 		HttpUriRequest request = convertType(type, url);
 		request = attachEntity(request, bodyObject, resource,
@@ -155,8 +164,41 @@ public class RestCaller {
 			request.addHeader("Accept", "application/json");
 		}
 		DefaultHttpClient client = new DefaultHttpClient();
+
+		if (authentication != null) {
+			try {
+				client = (DefaultHttpClient) addCredentials(client,
+						authentication);
+			} catch (IllegalArgumentException e) {
+				logger.error("Authentication not added: " + e.getMessage());
+			}
+		}
+
 		HttpResponse response = client.execute(request);
 		return response;
+	}
+
+	private AbstractHttpClient addCredentials(AbstractHttpClient client,
+			Authentication authentication) {
+		if (authentication instanceof BasicAuthentication) {
+			String host = (authentication.getHost() != null) ? authentication
+					.getHost() : AuthScope.ANY_HOST;
+			int port = (authentication.getPort() > 0) ? authentication
+					.getPort() : AuthScope.ANY_PORT;
+
+			if (authentication.getUsername() == null
+					|| authentication.getUsername().trim().isEmpty()
+					|| authentication.getPassword() == null
+					|| authentication.getPassword().trim().isEmpty()) {
+				throw new IllegalArgumentException(
+						"username and password should have a value");
+			}
+			client.getCredentialsProvider().setCredentials(
+					new AuthScope(host, port),
+					new UsernamePasswordCredentials(authentication
+							.getUsername(), authentication.getPassword()));
+		}
+		return client;
 	}
 
 	private <T> List<T> convertListObject(String json, Class<T> classType)
