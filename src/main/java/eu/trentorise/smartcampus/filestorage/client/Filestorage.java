@@ -269,6 +269,12 @@ public class Filestorage {
 				authentication);
 	}
 
+	public Token getMobileResourceToken(Authentication authentication,
+			String resourceId) throws FilestorageException {
+		return getResourceToken(null, resourceId, ResourceType.MOBILE_RESOURCE,
+				authentication);
+	}
+
 	/**
 	 * retrieves an owned resource
 	 * 
@@ -385,6 +391,9 @@ public class Filestorage {
 			case PUBLIC_RESOURCE:
 				functionality = "publicresource";
 				break;
+			case MOBILE_RESOURCE:
+				functionality = "mobile";
+				break;
 			default:
 				functionality = "myresource";
 				break;
@@ -415,6 +424,6 @@ public class Filestorage {
 	}
 
 	private static enum ResourceType {
-		MY_RESOURCE, SHARED_RESOURCE, PUBLIC_RESOURCE;
+		MY_RESOURCE, SHARED_RESOURCE, PUBLIC_RESOURCE, MOBILE_RESOURCE;
 	}
 }
