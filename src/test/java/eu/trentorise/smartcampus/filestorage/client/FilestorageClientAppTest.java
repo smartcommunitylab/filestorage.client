@@ -43,7 +43,7 @@ public class FilestorageClientAppTest {
 		String newName = "Change name";
 		storage.setName(newName);
 		storage = filestorage.updateStorageByApp(TestConstants.APP_AUTH_TOKEN,
-				storage.getId(), storage);
+				storage);
 		Storage reload = filestorage.getStorageByApp(
 				TestConstants.APP_AUTH_TOKEN, storage.getId());
 

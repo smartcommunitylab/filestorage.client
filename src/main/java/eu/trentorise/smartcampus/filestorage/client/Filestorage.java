@@ -405,22 +405,22 @@ public class Filestorage {
 		}
 	}
 
-	public Storage updateStorageByApp(String authToken, String storageId,
-			Storage storage) throws FilestorageException {
-		return updateStorage(authToken, storageId, storage, APP_OPERATION);
+	public Storage updateStorageByApp(String authToken, Storage storage)
+			throws FilestorageException {
+		return updateStorage(authToken, storage, APP_OPERATION);
 	}
 
-	private Storage updateStorage(String authToken, String storageId,
-			Storage storage, String operationType) throws FilestorageException {
+	private Storage updateStorage(String authToken, Storage storage,
+			String operationType) throws FilestorageException {
 		try {
 			String response = RemoteConnector.putJSON(serverUrl, SERVICE
-					+ STORAGE + appId + "/" + storageId,
+					+ STORAGE + appId + "/" + storage.getId(),
 					Storage.toJson(storage), authToken);
 			return Storage.toObject(response);
 		} catch (RemoteException e) {
-			logger.error(String
-					.format("Exception deleting storage %s of app %s",
-							storageId, appId), e);
+			logger.error(String.format(
+					"Exception deleting storage %s of app %s", storage.getId(),
+					appId), e);
 			throw new FilestorageException(e);
 		}
 	}
