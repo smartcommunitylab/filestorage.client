@@ -60,7 +60,7 @@ public abstract class ResourceRetriever {
 
 		Metadata metadata = filestorage.getResourceMetadata(authToken,
 				resourceId);
-		resource.setId(metadata.getRid());
+		resource.setId(metadata.getResourceId());
 		resource.setContentType(metadata.getContentType());
 		resource.setName(metadata.getName());
 		return resource;

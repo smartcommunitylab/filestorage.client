@@ -22,25 +22,39 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Utility class to be complaint with internal protocol of list representation
  * 
  * @author mirko perillo
  * 
  */
-@XmlRootElement(name = "appAccounts")
+@XmlRootElement(name = "storages")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class ListAppAccount {
+public class ListStorage {
 
-	@XmlElement(name = "appAccount")
-	private List<AppAccount> appAccounts;
+	@XmlElement(name = "storages")
+	private List<Storage> storages;
 
-	public List<AppAccount> getAppAccounts() {
-		return appAccounts;
+	public List<Storage> getStorages() {
+		return storages;
 	}
 
-	public void setAppAccounts(List<AppAccount> appAccounts) {
-		this.appAccounts = appAccounts;
+	public void setStorages(List<Storage> storages) {
+		this.storages = storages;
 	}
 
+	public static ListStorage toObject(String json) {
+		try {
+			JSONObject object = new JSONObject(json);
+			ListStorage listStorage = new ListStorage();
+			listStorage
+					.setStorages(Storage.toList(object.getString("storages")));
+			return listStorage;
+		} catch (JSONException e) {
+			return null;
+		}
+	}
 }

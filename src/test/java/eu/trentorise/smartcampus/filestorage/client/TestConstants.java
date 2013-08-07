@@ -17,8 +17,11 @@ package eu.trentorise.smartcampus.filestorage.client;
 
 public class TestConstants {
 
-	static final String APPNAME = "smartcampus";
-	static final String BASEURL = "https://vas-dev.smartcampuslab.it";
+	static final String USER_AUTH_TOKEN = "";
+	static final String APP_AUTH_TOKEN = "";
+
+	static final String APPID = "smartcampus";
+	static final String BASEURL = "http://localhost:8080";
 	static final String RESOURCE_NAME = "tux.jpeg";
 	static final String RESOURCE_NAME_UPDATE = "tux1.png";
 	static final String AUTH_TOKEN = "";

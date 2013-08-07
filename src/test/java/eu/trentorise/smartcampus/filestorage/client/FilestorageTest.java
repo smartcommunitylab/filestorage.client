@@ -26,12 +26,12 @@ import junit.framework.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import eu.trentorise.smartcampus.filestorage.client.model.AppAccount;
+import eu.trentorise.smartcampus.filestorage.client.model.Account;
 import eu.trentorise.smartcampus.filestorage.client.model.Configuration;
 import eu.trentorise.smartcampus.filestorage.client.model.Metadata;
 import eu.trentorise.smartcampus.filestorage.client.model.Resource;
+import eu.trentorise.smartcampus.filestorage.client.model.Storage;
 import eu.trentorise.smartcampus.filestorage.client.model.StorageType;
-import eu.trentorise.smartcampus.filestorage.client.model.UserAccount;
 
 public class FilestorageTest {
 
@@ -40,7 +40,7 @@ public class FilestorageTest {
 	@BeforeClass
 	public static void init() {
 		filestorage = new Filestorage(TestConstants.BASEURL,
-				TestConstants.APPNAME);
+				TestConstants.APPID);
 	}
 
 	@Test
@@ -48,52 +48,53 @@ public class FilestorageTest {
 			IOException {
 
 		// getting the applications accounts
-		List<AppAccount> appAccounts = filestorage.getAppAccounts();
+		List<Storage> appAccounts = filestorage
+				.getStoragesByApp(TestConstants.APP_AUTH_TOKEN);
 
-		UserAccount userAccount = createUserAccount(appAccounts.get(0));
+		Account userAccount = createUserAccount(appAccounts.get(0));
 		userAccount = filestorage.storeUserAccount(TestConstants.AUTH_TOKEN,
 				userAccount);
 
 		// getting the user accounts
-		List<UserAccount> userAccounts = filestorage
-				.getUserAccounts(TestConstants.AUTH_TOKEN);
+		List<Account> userAccounts = filestorage
+				.getAccountsByUser(TestConstants.AUTH_TOKEN);
 
 		// store resource
 		File sample = getFileSample(TestConstants.RESOURCE_NAME);
-		Metadata meta = filestorage.storeResource(sample,
+		Metadata meta = filestorage.storeResourceByUser(sample,
 				TestConstants.AUTH_TOKEN, userAccount.getId(), true);
 		Assert.assertNotNull(meta.getSocialId());
 
 		// getting resource informations
 		meta = filestorage.getResourceMetadata(TestConstants.AUTH_TOKEN,
-				meta.getRid());
+				meta.getResourceId());
 		Assert.assertEquals(TestConstants.RESOURCE_NAME, meta.getName());
-		Assert.assertEquals(TestConstants.APPNAME, meta.getAppName());
+		Assert.assertEquals(TestConstants.APPID, meta.getAppId());
 		// getting a resource
 		Resource res = filestorage.getMyResource(TestConstants.AUTH_TOKEN,
-				meta.getRid());
+				meta.getResourceId());
 		Assert.assertEquals(TestConstants.RESOURCE_NAME, res.getName());
 		Assert.assertNotNull(res.getContent());
 
 		// update resource
-		filestorage.updateResource(TestConstants.AUTH_TOKEN,
-				userAccount.getId(), meta.getRid(),
+		filestorage.updateResourceByUser(TestConstants.AUTH_TOKEN,
+				meta.getResourceId(),
 				getFileSample(TestConstants.RESOURCE_NAME_UPDATE));
 
 		// delete resource
-		filestorage.deleteResource(TestConstants.AUTH_TOKEN,
-				userAccount.getId(), meta.getRid());
+		filestorage.deleteResourceByUser(TestConstants.AUTH_TOKEN,
+				meta.getResourceId());
 	}
 
 	private File getFileSample(String filename) throws URISyntaxException {
 		return new File(getClass().getResource("/" + filename).toURI());
 	}
 
-	private UserAccount createUserAccount(AppAccount appAccount) {
-		UserAccount userAccount = new UserAccount();
-		userAccount.setAppAccountId(appAccount.getId());
-		userAccount.setAppName(appAccount.getAppName());
-		userAccount.setAccountName("test dropbox user account");
+	private Account createUserAccount(Storage appAccount) {
+		Account userAccount = new Account();
+		userAccount.setStorageId(appAccount.getId());
+		userAccount.setAppId(appAccount.getAppId());
+		userAccount.setName("test dropbox user account");
 		userAccount.setStorageType(StorageType.DROPBOX);
 		userAccount.setConfigurations(getConfiguration());
 		return userAccount;

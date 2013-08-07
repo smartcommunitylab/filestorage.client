@@ -16,9 +16,16 @@
 
 package eu.trentorise.smartcampus.filestorage.client.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * <i>Metadata</i> represents all the informations about a resource
@@ -37,7 +44,7 @@ public class Metadata {
 	/**
 	 * resource id
 	 */
-	private String rid;
+	private String resourceId;
 
 	/**
 	 * social id binded to resource
@@ -52,15 +59,15 @@ public class Metadata {
 	/**
 	 * account id in which resource is stored
 	 */
-	private String userAccountId;
+	private String accountId;
 	/**
 	 * application storage account id
 	 */
-	private String appAccountId;
+	private String storageId;
 	/**
 	 * application which resource is binded to
 	 */
-	private String appName;
+	private String appId;
 
 	/**
 	 * MIME type of resource
@@ -90,12 +97,12 @@ public class Metadata {
 		this.name = name;
 	}
 
-	public String getRid() {
-		return rid;
+	public String getResourceId() {
+		return resourceId;
 	}
 
-	public void setRid(String rid) {
-		this.rid = rid;
+	public void setResourceId(String resourceId) {
+		this.resourceId = resourceId;
 	}
 
 	public String getSocialId() {
@@ -130,12 +137,12 @@ public class Metadata {
 		this.lastModifiedTs = lastModifiedTs;
 	}
 
-	public String getUserAccountId() {
-		return userAccountId;
+	public String getAccountId() {
+		return accountId;
 	}
 
-	public void setUserAccountId(String accountId) {
-		this.userAccountId = accountId;
+	public void setAccountId(String accountId) {
+		this.accountId = accountId;
 	}
 
 	public String getFileExternalId() {
@@ -146,20 +153,20 @@ public class Metadata {
 		this.fileExternalId = fileExternalId;
 	}
 
-	public String getAppAccountId() {
-		return appAccountId;
+	public String getStorageId() {
+		return storageId;
 	}
 
-	public void setAppAccountId(String appAccountId) {
-		this.appAccountId = appAccountId;
+	public void setStorageId(String storageId) {
+		this.storageId = storageId;
 	}
 
-	public String getAppName() {
-		return appName;
+	public String getAppId() {
+		return appId;
 	}
 
-	public void setAppName(String appName) {
-		this.appName = appName;
+	public void setAppId(String appId) {
+		this.appId = appId;
 	}
 
 	public long getSize() {
@@ -168,6 +175,42 @@ public class Metadata {
 
 	public void setSize(long size) {
 		this.size = size;
+	}
+
+	public static Metadata toObject(String json) {
+		try {
+			JSONObject object = new JSONObject(json);
+			Metadata result = new Metadata();
+			result.setStorageId(object.getString("accountId"));
+			result.setAppId(object.getString("appId"));
+			result.setContentType(object.getString("contentType"));
+			result.setCreationTs(object.getLong("creationTs"));
+			result.setFileExternalId(object.getString("fileExternalId"));
+			result.setLastModifiedTs(object.getLong("lastModifiedTs"));
+			result.setName(object.getString("name"));
+			result.setResourceId(object.getString("resourceId"));
+			result.setSize(object.getLong("size"));
+			result.setSocialId(object.getString("socialId"));
+			return result;
+		} catch (JSONException e) {
+			return null;
+		}
+	}
+
+	public static List<Metadata> toList(String json) {
+		try {
+			JSONArray array = new JSONArray(json);
+			List<Metadata> listElements = new ArrayList<Metadata>();
+			for (int i = 0; array.optString(i).length() > 0; i++) {
+				String subElement = array.getString(i);
+				if (subElement != null) {
+					listElements.add(toObject(subElement));
+				}
+			}
+			return listElements;
+		} catch (JSONException e) {
+			return null;
+		}
 	}
 
 }

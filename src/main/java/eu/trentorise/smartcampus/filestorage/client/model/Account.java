@@ -16,6 +16,7 @@
 
 package eu.trentorise.smartcampus.filestorage.client.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -24,16 +25,20 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
- * <i>UserAccount</i> contains all the informations about a user storage
- * account. A UserAccount is binded to a {@link AppAccount}.
+ * <i>Account</i> contains all the informations about a user storage
+ * account. A Account is binded to a {@link Storage}.
  * 
  * @author mirko perillo
  * 
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class UserAccount {
+public class Account {
 	/**
 	 * id of the account
 	 */
@@ -41,16 +46,16 @@ public class UserAccount {
 	/**
 	 * id of the user
 	 */
-	private long userId;
+	private String userId;
 	/**
 	 * type of the storage
 	 */
-	private String appAccountId;
+	private String storageId;
 
 	/**
 	 * application name binded to user storage account
 	 */
-	private String appName;
+	private String appId;
 	/**
 	 * Type of storage
 	 */
@@ -58,7 +63,7 @@ public class UserAccount {
 	/**
 	 * name to represent the user storage account
 	 */
-	private String accountName;
+	private String name;
 	/**
 	 * list of the configurations of the account storage
 	 */
@@ -66,11 +71,11 @@ public class UserAccount {
 	@XmlElement(name = "configuration")
 	private List<Configuration> configurations;
 
-	public long getUserId() {
+	public String getUserId() {
 		return userId;
 	}
 
-	public void setUserId(long userId) {
+	public void setUserId(String userId) {
 		this.userId = userId;
 	}
 
@@ -98,28 +103,65 @@ public class UserAccount {
 		this.id = id;
 	}
 
-	public String getAppAccountId() {
-		return appAccountId;
+	public String getStorageId() {
+		return storageId;
 	}
 
-	public void setAppAccountId(String appAccountId) {
-		this.appAccountId = appAccountId;
+	public void setStorageId(String storageId) {
+		this.storageId = storageId;
 	}
 
-	public String getAccountName() {
-		return accountName;
+	public String getName() {
+		return name;
 	}
 
-	public void setAccountName(String accountName) {
-		this.accountName = accountName;
+	public void setName(String name) {
+		this.name = name;
 	}
 
-	public String getAppName() {
-		return appName;
+	public String getAppId() {
+		return appId;
 	}
 
-	public void setAppName(String appName) {
-		this.appName = appName;
+	public void setAppId(String appId) {
+		this.appId = appId;
+	}
+
+	public static Account toObject(String json) {
+		JSONObject object;
+		try {
+			object = new JSONObject(json);
+			Account account = new Account();
+			account.setName(object.getString("name"));
+			account.setStorageId(object.getString("storageId"));
+			account.setAppId(object.getString("appId"));
+			account.setId(object.getString("id"));
+			account.setUserId(object.getString("userId"));
+			account.setConfigurations(Configuration.toList(object
+					.getString("configurations")));
+			account.setStorageType(StorageType.valueOf(object
+					.getString("storageType")));
+			return account;
+		} catch (JSONException e) {
+			return null;
+		}
+
+	}
+
+	public static List<Account> toList(String json) {
+		try {
+			JSONArray array = new JSONArray(json);
+			List<Account> listElements = new ArrayList<Account>();
+			for (int i = 0; array.optString(i).length() > 0; i++) {
+				String subElement = array.getString(i);
+				if (subElement != null) {
+					listElements.add(toObject(subElement));
+				}
+			}
+			return listElements;
+		} catch (JSONException e) {
+			return null;
+		}
 	}
 
 }
