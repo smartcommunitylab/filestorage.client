@@ -4,6 +4,7 @@ import java.util.List;
 
 import junit.framework.Assert;
 
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -56,15 +57,61 @@ public class FilestorageClientAppTest {
 
 	}
 
-	@Test
-	public void getAccounts() throws SecurityException, FilestorageException {
+	@Before
+	public void cleanup() throws FilestorageException {
+		List<Storage> storages = filestorage
+				.getStoragesByApp(TestConstants.APP_AUTH_TOKEN);
 		List<Account> accounts = filestorage
 				.getAccountsByApp(TestConstants.APP_AUTH_TOKEN);
-		Assert.assertTrue(accounts.size() > 0);
-		Account account = filestorage.getAccountByApp(
-				TestConstants.APP_AUTH_TOKEN, accounts.get(0).getId());
-		Assert.assertTrue(account != null
-				&& account.getId().equals(accounts.get(0).getId()));
+		for (Account account : accounts) {
+			if (account.getName().contains("Sample")) {
+				filestorage.deleteAccountByApp(TestConstants.APP_AUTH_TOKEN,
+						account.getId());
+			}
+		}
+		for (Storage storage : storages) {
+			if (storage.getName().contains("Sample")) {
+				filestorage.deleteStorageByApp(TestConstants.APP_AUTH_TOKEN,
+						storage.getId());
+			}
+		}
+
+	}
+
+	@Test
+	public void account() throws SecurityException, FilestorageException {
+		List<Account> accounts = filestorage
+				.getAccountsByApp(TestConstants.APP_AUTH_TOKEN);
+		int size = accounts.size();
+		Storage storage = TestUtils.createStorage(TestConstants.APPID);
+		storage = filestorage.createStorageByApp(TestConstants.APP_AUTH_TOKEN,
+				storage);
+		Account account = TestUtils
+				.createAccount(storage, TestConstants.USERID);
+		account = filestorage.createAccountByApp(TestConstants.APP_AUTH_TOKEN,
+				account);
+		Assert.assertTrue(account != null && account.getId() != null);
+		accounts = filestorage.getAccountsByApp(TestConstants.APP_AUTH_TOKEN);
+		Assert.assertTrue(accounts.size() == size + 1);
+
+		Account reloaded = filestorage.getAccountByApp(
+				TestConstants.APP_AUTH_TOKEN, account.getId());
+		Assert.assertTrue(reloaded.getId().equals(account.getId()));
+
+		String newName = "Change name";
+		account.setName(newName);
+		account.setId(null);
+		filestorage.updateAccountByApp(TestConstants.APP_AUTH_TOKEN, account);
+		reloaded = filestorage.getAccountByApp(TestConstants.APP_AUTH_TOKEN,
+				account.getId());
+		Assert.assertEquals(newName, reloaded.getName());
+		filestorage.deleteAccountByApp(TestConstants.APP_AUTH_TOKEN,
+				account.getId());
+		filestorage.deleteStorageByApp(TestConstants.APP_AUTH_TOKEN,
+				storage.getId());
+		accounts = filestorage.getAccountsByApp(TestConstants.APP_AUTH_TOKEN);
+		Assert.assertTrue(accounts.size() == size);
+
 	}
 
 }

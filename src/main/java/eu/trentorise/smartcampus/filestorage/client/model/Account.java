@@ -16,6 +16,7 @@
 
 package eu.trentorise.smartcampus.filestorage.client.model;
 
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,9 +30,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import eu.trentorise.smartcampus.network.JsonUtils;
+
 /**
- * <i>Account</i> contains all the informations about a user storage
- * account. A Account is binded to a {@link Storage}.
+ * <i>Account</i> contains all the informations about a user storage account. A
+ * Account is binded to a {@link Storage}.
  * 
  * @author mirko perillo
  * 
@@ -164,4 +167,28 @@ public class Account {
 		}
 	}
 
+	public static String toJson(Account account) {
+		try {
+			StringWriter writer = new StringWriter();
+			writer.write("{");
+			writer.write(JSONObject.quote("id") + ":"
+					+ JsonUtils.toJson(account.getId()) + ",");
+			writer.write(JSONObject.quote("userId") + ":"
+					+ JsonUtils.toJson(account.getUserId()) + ",");
+			writer.write(JSONObject.quote("name") + ":"
+					+ JsonUtils.toJson(account.getName()) + ",");
+			writer.write(JSONObject.quote("storageType") + ":"
+					+ JsonUtils.toJson(account.getStorageType()) + ",");
+			writer.write(JSONObject.quote("storageId") + ":"
+					+ JsonUtils.toJson(account.getStorageId()) + ",");
+			writer.write(JSONObject.quote("configurations") + ":"
+					+ JsonUtils.toJson(account.getConfigurations()) + ",");
+			writer.write(JSONObject.quote("appId") + ":"
+					+ JsonUtils.toJson(account.getAppId()));
+			writer.write("}");
+			return writer.toString();
+		} catch (NullPointerException e) {
+			return null;
+		}
+	}
 }
