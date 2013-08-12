@@ -24,7 +24,6 @@ public class TestConstants {
 	static final String BASEURL = "http://localhost:8080";
 	static final String RESOURCE_NAME = "tux.jpeg";
 	static final String RESOURCE_NAME_UPDATE = "tux1.png";
-	static final String AUTH_TOKEN = "";
 	static final String USER_KEY = "";
 	static final String USER_SECRET = "";
 	static final String APP_KEY = "";
