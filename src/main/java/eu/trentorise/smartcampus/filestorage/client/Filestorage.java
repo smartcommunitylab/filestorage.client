@@ -45,7 +45,6 @@ import eu.trentorise.smartcampus.network.RemoteException;
 public class Filestorage {
 	private static final Logger logger = Logger.getLogger(Filestorage.class);
 
-	private RestCaller restCaller = new RestCaller();
 	private String serverUrl;
 	private String baseUrl;
 	private String appId;
