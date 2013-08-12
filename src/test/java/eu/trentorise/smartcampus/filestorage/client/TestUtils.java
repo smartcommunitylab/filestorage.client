@@ -1,5 +1,7 @@
 package eu.trentorise.smartcampus.filestorage.client;
 
+import java.io.File;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,8 +34,8 @@ public class TestUtils {
 
 	private static List<Configuration> createSampleStorageConfigurations() {
 		List<Configuration> confs = new ArrayList<Configuration>();
-		confs.add(new Configuration("APP_KEY", "sampleValue"));
-		confs.add(new Configuration("APP_SECRET", "sampleValue"));
+		confs.add(new Configuration("APP_KEY", TestConstants.APP_KEY));
+		confs.add(new Configuration("APP_SECRET", TestConstants.APP_SECRET));
 		return confs;
 	}
 
@@ -42,5 +44,10 @@ public class TestUtils {
 		confs.add(new Configuration("USER_KEY", TestConstants.USER_KEY));
 		confs.add(new Configuration("USER_SECRET", TestConstants.USER_SECRET));
 		return confs;
+	}
+
+	public static File getResourceSample(String filename)
+			throws URISyntaxException {
+		return new File(TestUtils.class.getResource("/" + filename).toURI());
 	}
 }

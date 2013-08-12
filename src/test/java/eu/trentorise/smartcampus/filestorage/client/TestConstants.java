@@ -27,5 +27,8 @@ public class TestConstants {
 	static final String AUTH_TOKEN = "";
 	static final String USER_KEY = "";
 	static final String USER_SECRET = "";
+	static final String APP_KEY = "";
+	static final String APP_SECRET = "";
+	static final String USERID = "";
 
 }

@@ -181,7 +181,8 @@ public class Metadata {
 		try {
 			JSONObject object = new JSONObject(json);
 			Metadata result = new Metadata();
-			result.setStorageId(object.getString("accountId"));
+			result.setStorageId(object.getString("storageId"));
+			result.setAccountId(object.getString("accountId"));
 			result.setAppId(object.getString("appId"));
 			result.setContentType(object.getString("contentType"));
 			result.setCreationTs(object.getLong("creationTs"));

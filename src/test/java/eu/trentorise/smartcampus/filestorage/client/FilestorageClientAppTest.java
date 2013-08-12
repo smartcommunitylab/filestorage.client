@@ -1,5 +1,7 @@
 package eu.trentorise.smartcampus.filestorage.client;
 
+import java.io.File;
+import java.net.URISyntaxException;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -9,6 +11,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.trentorise.smartcampus.filestorage.client.model.Account;
+import eu.trentorise.smartcampus.filestorage.client.model.Metadata;
+import eu.trentorise.smartcampus.filestorage.client.model.Resource;
 import eu.trentorise.smartcampus.filestorage.client.model.Storage;
 
 public class FilestorageClientAppTest {
@@ -19,6 +23,49 @@ public class FilestorageClientAppTest {
 	public static void init() {
 		filestorage = new Filestorage(TestConstants.BASEURL,
 				TestConstants.APPID);
+	}
+
+	@Test
+	public void resources() throws SecurityException, FilestorageException,
+			URISyntaxException {
+		Storage storage = TestUtils.createStorage(TestConstants.APPID);
+		storage = filestorage.createStorageByApp(TestConstants.APP_AUTH_TOKEN,
+				storage);
+		Account account = TestUtils
+				.createAccount(storage, TestConstants.USERID);
+		account = filestorage.createAccountByApp(TestConstants.APP_AUTH_TOKEN,
+				account);
+		File resource = TestUtils
+				.getResourceSample(TestConstants.RESOURCE_NAME);
+		Metadata metadata = filestorage.storeResourceByApp(resource,
+				TestConstants.APP_AUTH_TOKEN, account.getId(), false);
+		Assert.assertEquals(TestConstants.APPID, metadata.getAppId());
+		Assert.assertEquals(account.getId(), metadata.getAccountId());
+		Assert.assertTrue(metadata.getResourceId() != null);
+		boolean exceptionThrown = false;
+		try {
+			metadata = filestorage.storeResourceByApp(resource,
+					TestConstants.APP_AUTH_TOKEN, account.getId(), false);
+		} catch (FilestorageException e) {
+			exceptionThrown = true;
+		}
+
+		Assert.assertTrue(exceptionThrown);
+
+		Resource res = filestorage.getMyResourceByApp(
+				TestConstants.APP_AUTH_TOKEN, metadata.getResourceId());
+		Assert.assertNotNull(res);
+
+		resource = TestUtils
+				.getResourceSample(TestConstants.RESOURCE_NAME_UPDATE);
+		filestorage.updateResourceByApp(TestConstants.APP_AUTH_TOKEN,
+				metadata.getResourceId(), resource);
+		long resourceSize = metadata.getSize();
+		metadata = filestorage.getResourceMetadataByApp(
+				TestConstants.APP_AUTH_TOKEN, metadata.getResourceId());
+		Assert.assertNotSame(resourceSize, metadata.getSize());
+		filestorage.deleteResourceByApp(TestConstants.APP_AUTH_TOKEN,
+				metadata.getResourceId());
 	}
 
 	@Test
@@ -100,7 +147,6 @@ public class FilestorageClientAppTest {
 
 		String newName = "Change name";
 		account.setName(newName);
-		account.setId(null);
 		filestorage.updateAccountByApp(TestConstants.APP_AUTH_TOKEN, account);
 		reloaded = filestorage.getAccountByApp(TestConstants.APP_AUTH_TOKEN,
 				account.getId());
