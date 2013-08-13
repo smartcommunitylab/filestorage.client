@@ -61,8 +61,6 @@ public class Filestorage {
 
 	public static final String APP_OPERATION = "app/";
 	public static final String USER_OPERATION = "user/";
-	public static final String ANY_OPERATION = "any/";
-	private static final String AUTH_HEADER = "AUTH_TOKEN";
 
 	private static final String RESOURCE_PARAM_NAME = "file";
 
@@ -429,54 +427,6 @@ public class Filestorage {
 	}
 
 	/**
-	 * stores an user storage account
-	 * 
-	 * @param authToken
-	 *            authentication token
-	 * @param userAccount
-	 *            userAccount to store
-	 * @return the {@link Account} stored
-	 * @throws FilestorageException
-	 */
-	// public Account storeUserAccount(String authToken, Account userAccount)
-	// throws FilestorageException {
-	// HttpHeader header = new HttpHeader(AUTH_HEADER, authToken);
-	// try {
-	// return restCaller.callOneResult(RequestType.POST, serverUrl
-	// + "/useraccount/" + appId, Arrays.asList(header),
-	// userAccount, Account.class);
-	// } catch (Exception e) {
-	// logger.error("Exception getting user accounts", e);
-	// throw new FilestorageException(e);
-	// }
-	//
-	// }
-
-	/**
-	 * retrieves a shared resource
-	 * 
-	 * @param authToken
-	 *            authentication token
-	 * @param resourceId
-	 *            id of the resource
-	 * @return the {@link Resource}
-	 * @throws FilestorageException
-	 */
-	public Resource getSharedResource(String authToken, String resourceId)
-			throws FilestorageException {
-		try {
-			Token token = getResourceToken(authToken, resourceId, null, false,
-					APP_OPERATION);
-			ResourceRetriever retriever = resourceRetrieverFactory(token);
-			return retriever.getResource(authToken, resourceId, token, null);
-		} catch (Exception e) {
-			logger.error("Exception getting user accounts", e);
-			throw new FilestorageException(e);
-		}
-
-	}
-
-	/**
 	 * retrieves an owned resource
 	 * 
 	 * @param authToken
@@ -587,11 +537,6 @@ public class Filestorage {
 		return getResourceMetadata(authToken, resourceId, USER_OPERATION);
 	}
 
-	public Metadata getAnyResourceMetadata(String authToken, String resourceId)
-			throws FilestorageException {
-		return getResourceMetadata(authToken, resourceId, ANY_OPERATION);
-	}
-
 	public Metadata getResourceMetadataByApp(String authToken, String resourceId)
 			throws FilestorageException {
 		return getResourceMetadata(authToken, resourceId, APP_OPERATION);
@@ -607,9 +552,6 @@ public class Filestorage {
 			}
 			if (operationType.equals(USER_OPERATION)) {
 				uri = operationType + appId + "/" + resourceId;
-			}
-			if (operationType.equals(ANY_OPERATION)) {
-				uri = operationType + resourceId;
 			}
 			String response = MultipartRemoteConnector.getJSON(serverUrl,
 					SERVICE + METADATA + uri, authToken);
