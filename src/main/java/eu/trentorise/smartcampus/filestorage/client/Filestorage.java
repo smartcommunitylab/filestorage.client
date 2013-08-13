@@ -46,7 +46,6 @@ public class Filestorage {
 	private static final Logger logger = Logger.getLogger(Filestorage.class);
 
 	private String serverUrl;
-	private String baseUrl;
 	private String appId;
 
 	private static final String SERVICE = "/smartcampus.filestorage/";
@@ -54,7 +53,7 @@ public class Filestorage {
 	private static final String STORAGE = "storage/";
 	private static final String ACCOUNT = "account/";
 	private static final String RESOURCE = "resource/";
-	private static final String SHARED_RESOURCE = "resource/";
+	private static final String SHARED_RESOURCE = "sharedresource/";
 	private static final String MY_RESOURCE = "myresource/";
 	private static final String METADATA = "metadata/";
 	private static final String SOCIAL = "updatesocial/";
