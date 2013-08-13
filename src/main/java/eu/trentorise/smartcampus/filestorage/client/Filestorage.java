@@ -54,7 +54,7 @@ public class Filestorage {
 	private static final String ACCOUNT = "account/";
 	private static final String RESOURCE = "resource/";
 	private static final String SHARED_RESOURCE = "sharedresource/";
-	private static final String MY_RESOURCE = "myresource/";
+	private static final String MY_RESOURCE = "resource/";
 	private static final String METADATA = "metadata/";
 	private static final String SOCIAL = "updatesocial/";
 
