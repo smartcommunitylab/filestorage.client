@@ -35,6 +35,8 @@ public class FilestorageClientUserTest {
 				.createAccount(storage, TestConstants.USERID);
 		account = filestorage.createAccountByUser(
 				TestConstants.USER_AUTH_TOKEN, account);
+		int metadataSize = filestorage.getAllResourceMetadataByApp(
+				TestConstants.APP_AUTH_TOKEN).size();
 		File resource = TestUtils
 				.getResourceSample(TestConstants.RESOURCE_NAME);
 		Metadata metadata = filestorage.storeResourceByUser(resource,
@@ -64,6 +66,10 @@ public class FilestorageClientUserTest {
 		metadata = filestorage.getResourceMetadataByUser(
 				TestConstants.USER_AUTH_TOKEN, metadata.getResourceId());
 		Assert.assertNotSame(resourceSize, metadata.getSize());
+
+		Assert.assertEquals(metadataSize + 1, filestorage
+				.getAllResourceMetadataByApp(TestConstants.APP_AUTH_TOKEN)
+				.size());
 		filestorage.deleteResourceByUser(TestConstants.USER_AUTH_TOKEN,
 				metadata.getResourceId());
 	}

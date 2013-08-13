@@ -563,6 +563,36 @@ public class Filestorage {
 		}
 	}
 
+	public List<Metadata> getAllResourceMetadataByApp(String authToken)
+			throws FilestorageException {
+		return getAllResourceMetadata(authToken, APP_OPERATION);
+	}
+
+	public List<Metadata> getAllResourceMetadataByUser(String authToken)
+			throws FilestorageException {
+		return getAllResourceMetadata(authToken, USER_OPERATION);
+	}
+
+	private List<Metadata> getAllResourceMetadata(String authToken,
+			String operationType) throws FilestorageException {
+		try {
+			String uri = null;
+			if (operationType.equals(APP_OPERATION)) {
+				uri = "all/" + operationType + appId;
+			}
+			if (operationType.equals(USER_OPERATION)) {
+				uri = "all/" + operationType + appId;
+			}
+			String response = MultipartRemoteConnector.getJSON(serverUrl,
+					SERVICE + METADATA + uri, authToken);
+			return Metadata.toList(response);
+		} catch (RemoteException e) {
+			logger.error(String.format("Exception getting all metadata of %s",
+					appId));
+			throw new FilestorageException(e);
+		}
+	}
+
 	private Token getResourceToken(String authToken, String resourceId,
 			String userId, boolean owned, String operationType)
 			throws FilestorageException {
