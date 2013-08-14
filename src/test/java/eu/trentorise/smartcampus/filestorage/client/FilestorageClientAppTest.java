@@ -36,7 +36,7 @@ public class FilestorageClientAppTest {
 		account = filestorage.createAccountByApp(TestConstants.APP_AUTH_TOKEN,
 				account);
 		int metadataSize = filestorage.getAllResourceMetadataByApp(
-				TestConstants.APP_AUTH_TOKEN).size();
+				TestConstants.APP_AUTH_TOKEN, null, null).size();
 		File resource = TestUtils
 				.getResourceSample(TestConstants.RESOURCE_NAME);
 		Metadata metadata = filestorage.storeResourceByApp(resource,
@@ -67,9 +67,10 @@ public class FilestorageClientAppTest {
 				TestConstants.APP_AUTH_TOKEN, metadata.getResourceId());
 		Assert.assertNotSame(resourceSize, metadata.getSize());
 
-		Assert.assertEquals(metadataSize + 1, filestorage
-				.getAllResourceMetadataByApp(TestConstants.APP_AUTH_TOKEN)
-				.size());
+		Assert.assertEquals(
+				metadataSize + 1,
+				filestorage.getAllResourceMetadataByApp(
+						TestConstants.APP_AUTH_TOKEN, -1, 0).size());
 
 		filestorage.deleteResourceByApp(TestConstants.APP_AUTH_TOKEN,
 				metadata.getResourceId());

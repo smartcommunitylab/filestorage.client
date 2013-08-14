@@ -562,18 +562,35 @@ public class Filestorage {
 		}
 	}
 
-	public List<Metadata> getAllResourceMetadataByApp(String authToken)
-			throws FilestorageException {
-		return getAllResourceMetadata(authToken, APP_OPERATION);
+	public List<Metadata> getAllResourceMetadataByApp(String authToken,
+			Integer position, Integer size) throws FilestorageException {
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		if (position != null) {
+			parameters.put("position", position);
+		}
+		if (size != null) {
+			parameters.put("size", size);
+		}
+		return getAllResourceMetadata(authToken, APP_OPERATION,
+				parameters.size() == 0 ? null : parameters);
 	}
 
-	public List<Metadata> getAllResourceMetadataByUser(String authToken)
-			throws FilestorageException {
-		return getAllResourceMetadata(authToken, USER_OPERATION);
+	public List<Metadata> getAllResourceMetadataByUser(String authToken,
+			Integer position, Integer size) throws FilestorageException {
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		if (position != null) {
+			parameters.put("position", position);
+		}
+		if (size != null) {
+			parameters.put("size", size);
+		}
+		return getAllResourceMetadata(authToken, USER_OPERATION,
+				parameters.size() == 0 ? null : parameters);
 	}
 
 	private List<Metadata> getAllResourceMetadata(String authToken,
-			String operationType) throws FilestorageException {
+			String operationType, Map<String, Object> parameters)
+			throws FilestorageException {
 		try {
 			String uri = null;
 			if (operationType.equals(APP_OPERATION)) {
@@ -583,7 +600,7 @@ public class Filestorage {
 				uri = "all/" + operationType + appId;
 			}
 			String response = MultipartRemoteConnector.getJSON(serverUrl,
-					SERVICE + METADATA + uri, authToken);
+					SERVICE + METADATA + uri, authToken, parameters);
 			return Metadata.toList(response);
 		} catch (RemoteException e) {
 			logger.error(String.format("Exception getting all metadata of %s",
