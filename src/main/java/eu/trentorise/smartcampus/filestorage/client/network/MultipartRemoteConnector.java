@@ -13,6 +13,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.util.EntityUtils;
 
@@ -27,14 +28,14 @@ public class MultipartRemoteConnector extends RemoteConnector {
 	}
 
 	public static String postJSON(String host, String service, String token,
-			FileParam... fileparam) throws RemoteException {
-		return postJSON(host, service, null, token, null, fileparam);
+			MultipartParam... param) throws RemoteException {
+		return postJSON(host, service, null, token, null, param);
 	}
 
 	public static String postJSON(String host, String service, String token,
-			Map<String, Object> parameters, FileParam... fileparam)
+			Map<String, Object> parameters, MultipartParam... param)
 			throws RemoteException {
-		return postJSON(host, service, null, token, parameters, fileparam);
+		return postJSON(host, service, null, token, parameters, param);
 	}
 
 	public static String postJSON(String host, String service, String body,
@@ -42,12 +43,12 @@ public class MultipartRemoteConnector extends RemoteConnector {
 			throws SecurityException, RemoteException {
 
 		return postJSON(host, service, body, token, parameters,
-				(FileParam[]) null);
+				(MultipartParam[]) null);
 	}
 
 	private static String postJSON(String host, String service, String body,
 			String token, Map<String, Object> parameters,
-			FileParam... fileparam) throws RemoteException {
+			MultipartParam... param) throws RemoteException {
 		String queryString = generateQueryString(parameters);
 		final HttpResponse resp;
 		final HttpPost post = new HttpPost(host + service + queryString);
@@ -57,10 +58,7 @@ public class MultipartRemoteConnector extends RemoteConnector {
 
 		try {
 
-			attachHttpEntity(post, body, fileparam);
-			// StringEntity input = new StringEntity(body);
-			// input.setContentType("application/json");
-			// post.setEntity(input);
+			attachHttpEntity(post, body, param);
 
 			resp = getHttpClient().execute(post);
 			String response = EntityUtils.toString(resp.getEntity());
@@ -96,24 +94,36 @@ public class MultipartRemoteConnector extends RemoteConnector {
 		return httpEntity;
 	}
 
-	private static HttpEntity createHttpEntity(FileParam... entity) {
+	private static HttpEntity createHttpEntity(MultipartParam... entity) {
 		MultipartEntity httpEntity = new MultipartEntity();
-		for (FileParam param : entity) {
-			httpEntity.addPart(param.getParamName(),
-					new FileBody(param.getFile()));
+		for (MultipartParam param : entity) {
+			if (param instanceof FileParam) {
+				FileParam fileParam = (FileParam) param;
+				httpEntity.addPart(fileParam.getParamName(), new FileBody(
+						fileParam.getFile()));
+			}
+
+			if (param instanceof ByteArrayParam) {
+				ByteArrayParam byteArrayParam = (ByteArrayParam) param;
+				httpEntity.addPart(
+						byteArrayParam.getParamName(),
+						new ByteArrayBody(byteArrayParam.getContent(),
+								byteArrayParam.getContentType(), byteArrayParam
+										.getFilename()));
+			}
 		}
 		return httpEntity;
 	}
 
 	private static HttpEntityEnclosingRequest attachHttpEntity(
 			HttpEntityEnclosingRequest request, String body,
-			FileParam... fileparam) throws UnsupportedEncodingException {
+			MultipartParam... param) throws UnsupportedEncodingException {
 		if (body != null) {
 			request.setEntity(createHttpEntity(body));
 		}
 
-		if (fileparam != null) {
-			request.setEntity(createHttpEntity(fileparam));
+		if (param != null) {
+			request.setEntity(createHttpEntity(param));
 		}
 
 		return request;

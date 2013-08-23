@@ -90,6 +90,5 @@
 				</configuration>
 			</plugin>
 		</plugins>
-		<finalName>filestorage.client</finalName>
 	</build>
 </project>

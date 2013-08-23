@@ -20,8 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
-
 import eu.trentorise.smartcampus.filestorage.client.model.Account;
 import eu.trentorise.smartcampus.filestorage.client.model.ListAccount;
 import eu.trentorise.smartcampus.filestorage.client.model.ListStorage;
@@ -29,7 +27,9 @@ import eu.trentorise.smartcampus.filestorage.client.model.Metadata;
 import eu.trentorise.smartcampus.filestorage.client.model.Resource;
 import eu.trentorise.smartcampus.filestorage.client.model.Storage;
 import eu.trentorise.smartcampus.filestorage.client.model.Token;
+import eu.trentorise.smartcampus.filestorage.client.network.ByteArrayParam;
 import eu.trentorise.smartcampus.filestorage.client.network.FileParam;
+import eu.trentorise.smartcampus.filestorage.client.network.MultipartParam;
 import eu.trentorise.smartcampus.filestorage.client.network.MultipartRemoteConnector;
 import eu.trentorise.smartcampus.filestorage.client.retriever.HttpResourceRetriever;
 import eu.trentorise.smartcampus.filestorage.client.retriever.ResourceRetriever;
@@ -43,25 +43,25 @@ import eu.trentorise.smartcampus.network.RemoteException;
  * 
  */
 public class Filestorage {
-	private static final Logger logger = Logger.getLogger(Filestorage.class);
+	// private static final Logger logger = Logger.getLogger(Filestorage.class);
 
 	private String serverUrl;
 	private String appId;
 
-	private static final String SERVICE = "/smartcampus.filestorage/";
+	protected static final String SERVICE = "/core.filestorage/";
 
-	private static final String STORAGE = "storage/";
-	private static final String ACCOUNT = "account/";
-	private static final String RESOURCE = "resource/";
-	private static final String SHARED_RESOURCE = "sharedresource/";
-	private static final String MY_RESOURCE = "resource/";
-	private static final String METADATA = "metadata/";
-	private static final String SOCIAL = "updatesocial/";
+	protected static final String STORAGE = "storage/";
+	protected static final String ACCOUNT = "account/";
+	protected static final String RESOURCE = "resource/";
+	protected static final String SHARED_RESOURCE = "sharedresource/";
+	protected static final String MY_RESOURCE = "resource/";
+	protected static final String METADATA = "metadata/";
+	protected static final String SOCIAL = "updatesocial/";
 
 	public static final String APP_OPERATION = "app/";
 	public static final String USER_OPERATION = "user/";
 
-	private static final String RESOURCE_PARAM_NAME = "file";
+	protected static final String RESOURCE_PARAM_NAME = "file";
 
 	/**
 	 * 
@@ -105,22 +105,56 @@ public class Filestorage {
 				APP_OPERATION);
 	}
 
+	public Metadata storeResourceByApp(byte[] resourceContent,
+			String resourceName, String resourceContentType, String authToken,
+			String accountId, boolean createSocialData)
+			throws FilestorageException {
+		return storeResource(resourceContent, resourceName,
+				resourceContentType, authToken, accountId, createSocialData,
+				APP_OPERATION);
+	}
+
+	public Metadata storeResourceByUser(byte[] resourceContent,
+			String resourceName, String resourceContentType, String authToken,
+			String accountId, boolean createSocialData)
+			throws FilestorageException {
+		return storeResource(resourceContent, resourceName,
+				resourceContentType, authToken, accountId, createSocialData,
+				USER_OPERATION);
+	}
+
 	private Metadata storeResource(File resource, String authToken,
 			String accountId, boolean createSocialData, String operationType)
 			throws FilestorageException {
+		FileParam multipartParam = new FileParam(RESOURCE_PARAM_NAME, resource);
+		return storeResource(multipartParam, authToken, accountId,
+				createSocialData, operationType);
+	}
+
+	private Metadata storeResource(byte[] resourceContent, String resourceName,
+			String resourceContentType, String authToken, String accountId,
+			boolean createSocialData, String operationType)
+			throws FilestorageException {
+		ByteArrayParam multipartParam = new ByteArrayParam(RESOURCE_PARAM_NAME,
+				resourceName, resourceContentType, resourceContent);
+		return storeResource(multipartParam, authToken, accountId,
+				createSocialData, operationType);
+	}
+
+	private Metadata storeResource(MultipartParam resource, String authToken,
+			String accountId, boolean createSocialData, String operationType)
+			throws FilestorageException {
 		try {
-			FileParam multipartParam = new FileParam(resource,
-					RESOURCE_PARAM_NAME);
+
 			Map<String, Object> parameters = new HashMap<String, Object>();
 			parameters.put("createSocialData", createSocialData);
 
 			String response = MultipartRemoteConnector.postJSON(serverUrl,
 					SERVICE + RESOURCE + "create/" + operationType + appId
-							+ "/" + accountId, authToken, parameters,
-					multipartParam);
+							+ "/" + accountId, authToken, parameters, resource);
 			return Metadata.toObject(response);
 		} catch (Exception e) {
-			logger.error("Exception storing resource", e);
+			// logger.error("Exception storing resource", e);
 			throw new FilestorageException(e);
 		}
 	}
@@ -150,9 +184,9 @@ public class Filestorage {
 			MultipartRemoteConnector.deleteJSON(serverUrl, SERVICE + RESOURCE
 					+ operationType + appId + "/" + resourceId, authToken);
 		} catch (Exception e) {
-			logger.error(
-					String.format("Exception updating resource %s", resourceId),
-					e);
+			// logger.error(
+			// String.format("Exception updating resource %s", resourceId),
+			// e);
 			throw new FilestorageException(e);
 		}
 	}
@@ -182,15 +216,15 @@ public class Filestorage {
 
 	private void updateResource(String authToken, String resourceId,
 			File resource, String operationType) throws FilestorageException {
-		FileParam multipartParam = new FileParam(resource, RESOURCE_PARAM_NAME);
+		FileParam multipartParam = new FileParam(RESOURCE_PARAM_NAME, resource);
 		try {
 			MultipartRemoteConnector.postJSON(serverUrl, SERVICE + RESOURCE
 					+ operationType + appId + "/" + resourceId, authToken,
 					multipartParam);
 		} catch (RemoteException e) {
-			logger.error(
-					String.format("Exception updating resource %s", resourceId),
-					e);
+			// logger.error(
+			// String.format("Exception updating resource %s", resourceId),
+			// e);
 			throw new FilestorageException(e);
 		}
 	}
@@ -220,7 +254,7 @@ public class Filestorage {
 					SERVICE + ACCOUNT + operationType + appId, authToken);
 			return ListAccount.toObject(response).getAccounts();
 		} catch (RemoteException e) {
-			logger.error(String.format("Exception getting accounts"), e);
+			// logger.error(String.format("Exception getting accounts"), e);
 			throw new FilestorageException(e);
 		}
 	}
@@ -243,8 +277,8 @@ public class Filestorage {
 							+ appId + "/" + accountId, authToken);
 			return Account.toObject(response);
 		} catch (RemoteException e) {
-			logger.error(
-					String.format("Exception getting account %s", accountId), e);
+			// logger.error(
+			// String.format("Exception getting account %s", accountId), e);
 			throw new FilestorageException(e);
 		}
 	}
@@ -265,8 +299,8 @@ public class Filestorage {
 			MultipartRemoteConnector.deleteJSON(serverUrl, SERVICE + ACCOUNT
 					+ operationType + appId + "/" + accountId, authToken);
 		} catch (RemoteException e) {
-			logger.error(
-					String.format("Exception getting account %s", accountId), e);
+			// logger.error(
+			// String.format("Exception getting account %s", accountId), e);
 			throw new FilestorageException(e);
 		}
 	}
@@ -289,9 +323,9 @@ public class Filestorage {
 					Account.toJson(account), authToken);
 			return Account.toObject(response);
 		} catch (RemoteException e) {
-			logger.error(String.format(
-					"Exception creating new account %s for app %s",
-					account.getName(), account.getAppId()), e);
+			// logger.error(String.format(
+			// "Exception creating new account %s for app %s",
+			// account.getName(), account.getAppId()), e);
 			throw new FilestorageException(e);
 		}
 	}
@@ -313,9 +347,9 @@ public class Filestorage {
 					+ operationType + appId + "/" + account.getId(),
 					Account.toJson(account), authToken);
 		} catch (RemoteException e) {
-			logger.error(String.format(
-					"Exception updating account %s for app %s",
-					account.getName(), account.getAppId()), e);
+			// logger.error(String.format(
+			// "Exception updating account %s for app %s",
+			// account.getName(), account.getAppId()), e);
 			throw new FilestorageException(e);
 		}
 	}
@@ -332,15 +366,20 @@ public class Filestorage {
 		return getStorages(authToken, APP_OPERATION);
 	}
 
+	public List<Storage> getStoragesByUser(String authToken)
+			throws SecurityException, FilestorageException {
+		return getStorages(authToken, USER_OPERATION);
+	}
+
 	private List<Storage> getStorages(String authToken, String operationType)
 			throws SecurityException, FilestorageException {
 		try {
 			String response = MultipartRemoteConnector.getJSON(serverUrl,
-					SERVICE + STORAGE + appId, authToken);
+					SERVICE + STORAGE + operationType + appId, authToken);
 			return ListStorage.toObject(response).getStorages();
 		} catch (RemoteException e) {
-			logger.error(String.format("Exception reading storages of app %s",
-					appId), e);
+			// logger.error(String.format("Exception reading storages of app %s",
+			// appId), e);
 			throw new FilestorageException(e);
 		}
 	}
@@ -350,17 +389,23 @@ public class Filestorage {
 		return getStorage(authToken, storageId, APP_OPERATION);
 	}
 
+	public Storage getStorageByUser(String authToken, String storageId)
+			throws FilestorageException {
+		return getStorage(authToken, storageId, USER_OPERATION);
+	}
+
 	private Storage getStorage(String authToken, String storageId,
 			String operationType) throws SecurityException,
 			FilestorageException {
 		try {
-			String response = MultipartRemoteConnector.getJSON(serverUrl,
-					SERVICE + STORAGE + appId + "/" + storageId, authToken);
+			String response = MultipartRemoteConnector
+					.getJSON(serverUrl, SERVICE + STORAGE + operationType
+							+ appId + "/" + storageId, authToken);
 			return Storage.toObject(response);
 		} catch (RemoteException e) {
-			logger.error(
-					String.format("Exception reading storage %s of app %s",
-							storageId, appId), e);
+			// logger.error(
+			// String.format("Exception reading storage %s of app %s",
+			// storageId, appId), e);
 			throw new FilestorageException(e);
 		}
 	}
@@ -375,12 +420,12 @@ public class Filestorage {
 			FilestorageException {
 		try {
 			String response = MultipartRemoteConnector.postJSON(serverUrl,
-					SERVICE + STORAGE + appId, Storage.toJson(storage),
-					authToken);
+					SERVICE + STORAGE + operationType + appId,
+					Storage.toJson(storage), authToken);
 			return Storage.toObject(response);
 		} catch (RemoteException e) {
-			logger.error(String.format("Exception creating storage for app %s",
-					appId), e);
+			// logger.error(String.format("Exception creating storage for app %s",
+			// appId), e);
 			throw new FilestorageException(e);
 		}
 	}
@@ -394,13 +439,14 @@ public class Filestorage {
 			String operationType) throws FilestorageException {
 
 		try {
-			String response = MultipartRemoteConnector.deleteJSON(serverUrl,
-					SERVICE + STORAGE + appId + "/" + storageId, authToken);
+			String response = MultipartRemoteConnector
+					.deleteJSON(serverUrl, SERVICE + STORAGE + operationType
+							+ appId + "/" + storageId, authToken);
 			return Boolean.valueOf(response);
 		} catch (RemoteException e) {
-			logger.error(String
-					.format("Exception deleting storage %s of app %s",
-							storageId, appId), e);
+			// logger.error(String
+			// .format("Exception deleting storage %s of app %s",
+			// storageId, appId), e);
 			throw new FilestorageException(e);
 		}
 	}
@@ -413,14 +459,16 @@ public class Filestorage {
 	private Storage updateStorage(String authToken, Storage storage,
 			String operationType) throws FilestorageException {
 		try {
-			String response = MultipartRemoteConnector.putJSON(serverUrl,
-					SERVICE + STORAGE + appId + "/" + storage.getId(),
-					Storage.toJson(storage), authToken);
+			String response = MultipartRemoteConnector.putJSON(
+					serverUrl,
+					SERVICE + STORAGE + operationType + appId + "/"
+							+ storage.getId(), Storage.toJson(storage),
+					authToken);
 			return Storage.toObject(response);
 		} catch (RemoteException e) {
-			logger.error(String.format(
-					"Exception deleting storage %s of app %s", storage.getId(),
-					appId), e);
+			// logger.error(String.format(
+			// "Exception deleting storage %s of app %s", storage.getId(),
+			// appId), e);
 			throw new FilestorageException(e);
 		}
 	}
@@ -454,9 +502,9 @@ public class Filestorage {
 			return retriever.getResource(authToken, resourceId, token,
 					operationType);
 		} catch (Exception e) {
-			logger.error(
-					String.format("Exception getting resource %s", resourceId),
-					e);
+			// logger.error(
+			// String.format("Exception getting resource %s", resourceId),
+			// e);
 			throw new FilestorageException(e);
 		}
 	}
@@ -480,9 +528,9 @@ public class Filestorage {
 			return retriever.getResource(authToken, resourceId, token,
 					operationType);
 		} catch (Exception e) {
-			logger.error(
-					String.format("Exception getting resource %s", resourceId),
-					e);
+			// logger.error(
+			// String.format("Exception getting resource %s", resourceId),
+			// e);
 			throw new FilestorageException(e);
 		}
 	}
@@ -514,9 +562,9 @@ public class Filestorage {
 					authToken);
 			return Metadata.toObject(response);
 		} catch (RemoteException e) {
-			logger.error(String
-					.format("Exception updating social data of resource %s",
-							resourceId), e);
+			// logger.error(String
+			// .format("Exception updating social data of resource %s",
+			// resourceId), e);
 			throw new FilestorageException(e);
 		}
 	}
@@ -556,8 +604,8 @@ public class Filestorage {
 					SERVICE + METADATA + uri, authToken);
 			return Metadata.toObject(response);
 		} catch (RemoteException e) {
-			logger.error(String.format(
-					"Exception getting metadata of resource %s", resourceId));
+			// logger.error(String.format(
+			// "Exception getting metadata of resource %s", resourceId));
 			throw new FilestorageException(e);
 		}
 	}
@@ -603,8 +651,8 @@ public class Filestorage {
 					SERVICE + METADATA + uri, authToken, parameters);
 			return Metadata.toList(response);
 		} catch (RemoteException e) {
-			logger.error(String.format("Exception getting all metadata of %s",
-					appId));
+			// logger.error(String.format("Exception getting all metadata of %s",
+			// appId));
 			throw new FilestorageException(e);
 		}
 	}
@@ -623,9 +671,9 @@ public class Filestorage {
 							+ "/" : "") + resourceId, authToken);
 			return Token.toObject(response);
 		} catch (RemoteException e) {
-			logger.error(
-					String.format("Exception getting resource %s", resourceId),
-					e);
+			// logger.error(
+			// String.format("Exception getting resource %s", resourceId),
+			// e);
 			throw new FilestorageException(e);
 		}
 	}

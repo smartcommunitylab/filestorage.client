@@ -1,11 +1,13 @@
 package eu.trentorise.smartcampus.filestorage.client;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
 
 import junit.framework.Assert;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -27,7 +29,7 @@ public class FilestorageClientUserTest {
 
 	@Test
 	public void resources() throws SecurityException, FilestorageException,
-			URISyntaxException {
+			URISyntaxException, IOException {
 		Storage storage = TestUtils.createStorage(TestConstants.APPID);
 		storage = filestorage.createStorageByApp(TestConstants.APP_AUTH_TOKEN,
 				storage);
@@ -53,6 +55,19 @@ public class FilestorageClientUserTest {
 		}
 
 		Assert.assertTrue(exceptionThrown);
+
+		byte[] resourceContent = FileUtils.readFileToByteArray(TestUtils
+				.getResourceSample(TestConstants.RESOURCE_NAME_UPDATE));
+
+		Metadata metadata1 = filestorage.storeResourceByUser(resourceContent,
+				TestConstants.RESOURCE_CONTENT_TYPE,
+				TestConstants.RESOURCE_NAME_UPDATE,
+				TestConstants.USER_AUTH_TOKEN, account.getId(), false);
+
+		Assert.assertTrue(metadata1.getResourceId() != null);
+
+		filestorage.deleteResourceByUser(TestConstants.USER_AUTH_TOKEN,
+				metadata1.getResourceId());
 
 		Resource res = filestorage.getMyResourceByUser(
 				TestConstants.USER_AUTH_TOKEN, metadata.getResourceId());
@@ -94,6 +109,15 @@ public class FilestorageClientUserTest {
 			}
 		}
 
+	}
+
+	@Test
+	public void storage() throws SecurityException, FilestorageException {
+		// Storage storage = TestUtils.createStorage(TestConstants.APPID);
+		// storage =
+		// filestorage.createStorageByApp(TestConstants.APP_AUTH_TOKEN,
+		// storage);
+		filestorage.getStoragesByUser(TestConstants.USER_AUTH_TOKEN);
 	}
 
 	@Test

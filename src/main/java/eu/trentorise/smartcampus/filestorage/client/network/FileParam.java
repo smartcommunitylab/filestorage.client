@@ -2,17 +2,16 @@ package eu.trentorise.smartcampus.filestorage.client.network;
 
 import java.io.File;
 
-public class FileParam {
+public class FileParam extends MultipartParam {
 	private File file;
-	private String paramName;
 
-	public FileParam() {
+	public FileParam(String paramName) {
+		super(paramName);
 	}
 
-	public FileParam(File file, String paramName) {
-		super();
+	public FileParam(String paramName, File file) {
+		super(paramName);
 		this.file = file;
-		this.paramName = paramName;
 	}
 
 	public File getFile() {
@@ -21,14 +20,6 @@ public class FileParam {
 
 	public void setFile(File file) {
 		this.file = file;
-	}
-
-	public String getParamName() {
-		return paramName;
-	}
-
-	public void setParamName(String paramName) {
-		this.paramName = paramName;
 	}
 
 }

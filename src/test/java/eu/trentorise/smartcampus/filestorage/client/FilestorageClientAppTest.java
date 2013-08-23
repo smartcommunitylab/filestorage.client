@@ -1,11 +1,13 @@
 package eu.trentorise.smartcampus.filestorage.client;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
 
 import junit.framework.Assert;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -27,7 +29,7 @@ public class FilestorageClientAppTest {
 
 	@Test
 	public void resources() throws SecurityException, FilestorageException,
-			URISyntaxException {
+			URISyntaxException, IOException {
 		Storage storage = TestUtils.createStorage(TestConstants.APPID);
 		storage = filestorage.createStorageByApp(TestConstants.APP_AUTH_TOKEN,
 				storage);
@@ -41,6 +43,7 @@ public class FilestorageClientAppTest {
 				.getResourceSample(TestConstants.RESOURCE_NAME);
 		Metadata metadata = filestorage.storeResourceByApp(resource,
 				TestConstants.APP_AUTH_TOKEN, account.getId(), false);
+
 		Assert.assertEquals(TestConstants.APPID, metadata.getAppId());
 		Assert.assertEquals(account.getId(), metadata.getAccountId());
 		Assert.assertTrue(metadata.getResourceId() != null);
@@ -53,6 +56,19 @@ public class FilestorageClientAppTest {
 		}
 
 		Assert.assertTrue(exceptionThrown);
+
+		byte[] resourceContent = FileUtils.readFileToByteArray(TestUtils
+				.getResourceSample(TestConstants.RESOURCE_NAME_UPDATE));
+
+		Metadata metadata1 = filestorage.storeResourceByApp(resourceContent,
+				TestConstants.RESOURCE_CONTENT_TYPE,
+				TestConstants.RESOURCE_NAME_UPDATE,
+				TestConstants.APP_AUTH_TOKEN, account.getId(), false);
+
+		Assert.assertTrue(metadata1.getResourceId() != null);
+
+		filestorage.deleteResourceByApp(TestConstants.APP_AUTH_TOKEN,
+				metadata1.getResourceId());
 
 		Resource res = filestorage.getMyResourceByApp(
 				TestConstants.APP_AUTH_TOKEN, metadata.getResourceId());
@@ -74,6 +90,7 @@ public class FilestorageClientAppTest {
 
 		filestorage.deleteResourceByApp(TestConstants.APP_AUTH_TOKEN,
 				metadata.getResourceId());
+
 	}
 
 	@Test
