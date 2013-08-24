@@ -31,7 +31,7 @@ public class FilestorageClientAppTest {
 	public void resources() throws SecurityException, FilestorageException,
 			URISyntaxException, IOException {
 		Storage storage = TestUtils.createStorage(TestConstants.APPID);
-		storage = filestorage.createStorageByApp(TestConstants.APP_AUTH_TOKEN,
+		storage = filestorage.createStorage(TestConstants.APP_AUTH_TOKEN,
 				storage);
 		Account account = TestUtils
 				.createAccount(storage, TestConstants.USERID);
@@ -95,44 +95,36 @@ public class FilestorageClientAppTest {
 
 	@Test
 	public void storage() throws FilestorageException {
-		List<Storage> storages = filestorage
-				.getStoragesByApp(TestConstants.APP_AUTH_TOKEN);
-		int size = storages.size();
-		if (size > 0) {
-			String storageId = storages.get(0).getId();
-			Storage storage = filestorage.getStorageByApp(
-					TestConstants.APP_AUTH_TOKEN, storageId);
-			Assert.assertTrue(storage != null
-					&& storage.getId().equals(storageId));
+		Storage storage = filestorage.getStorage(TestConstants.APP_AUTH_TOKEN);
+		if (storage != null) {
+			filestorage.deleteStorage(TestConstants.APP_AUTH_TOKEN);
 		}
-
-		Storage storage = TestUtils.createStorage(TestConstants.APPID);
-		storage = filestorage.createStorageByApp(TestConstants.APP_AUTH_TOKEN,
-				storage);
-		storages = filestorage.getStoragesByApp(TestConstants.APP_AUTH_TOKEN);
-		Assert.assertTrue(storage.getId() != null
-				&& storages.size() == size + 1);
+		
+		storage = TestUtils.createStorage(TestConstants.APPID);
+		
+		Storage newStorage = filestorage.createStorage(TestConstants.APP_AUTH_TOKEN, storage);
+		Assert.assertNotNull(newStorage);
+		storage = filestorage.getStorage(TestConstants.APP_AUTH_TOKEN);
+		Assert.assertEquals(storage.getId(),newStorage.getId());
+		Assert.assertEquals(storage.getAppId(),newStorage.getAppId());
+		
 		String newName = "Change name";
 		storage.setName(newName);
-		storage = filestorage.updateStorageByApp(TestConstants.APP_AUTH_TOKEN,
+		storage = filestorage.updateStorage(TestConstants.APP_AUTH_TOKEN,
 				storage);
-		Storage reload = filestorage.getStorageByApp(
-				TestConstants.APP_AUTH_TOKEN, storage.getId());
+		Storage reload = filestorage.getStorage(TestConstants.APP_AUTH_TOKEN);
 
 		Assert.assertTrue(reload.getName().equals(newName)
 				&& storage.getName().equals(newName));
 
-		Assert.assertTrue(filestorage.deleteStorageByApp(
-				TestConstants.APP_AUTH_TOKEN, storage.getId()));
-		storages = filestorage.getStoragesByApp(TestConstants.APP_AUTH_TOKEN);
-		Assert.assertTrue(storages.size() == size);
-
+		Assert.assertTrue(filestorage.deleteStorage(TestConstants.APP_AUTH_TOKEN));
+		storage = filestorage.getStorage(TestConstants.APP_AUTH_TOKEN);
+		Assert.assertNull(storage);
 	}
 
 	@Before
 	public void cleanup() throws FilestorageException {
-		List<Storage> storages = filestorage
-				.getStoragesByApp(TestConstants.APP_AUTH_TOKEN);
+		Storage storage = filestorage.getStorage(TestConstants.APP_AUTH_TOKEN);
 		List<Account> accounts = filestorage
 				.getAccountsByApp(TestConstants.APP_AUTH_TOKEN);
 		for (Account account : accounts) {
@@ -141,11 +133,8 @@ public class FilestorageClientAppTest {
 						account.getId());
 			}
 		}
-		for (Storage storage : storages) {
-			if (storage.getName().contains("Sample")) {
-				filestorage.deleteStorageByApp(TestConstants.APP_AUTH_TOKEN,
-						storage.getId());
-			}
+		if (storage != null) {
+			filestorage.deleteStorage(TestConstants.APP_AUTH_TOKEN);
 		}
 
 	}
@@ -156,7 +145,7 @@ public class FilestorageClientAppTest {
 				.getAccountsByApp(TestConstants.APP_AUTH_TOKEN);
 		int size = accounts.size();
 		Storage storage = TestUtils.createStorage(TestConstants.APPID);
-		storage = filestorage.createStorageByApp(TestConstants.APP_AUTH_TOKEN,
+		storage = filestorage.createStorage(TestConstants.APP_AUTH_TOKEN,
 				storage);
 		Account account = TestUtils
 				.createAccount(storage, TestConstants.USERID);
@@ -178,8 +167,7 @@ public class FilestorageClientAppTest {
 		Assert.assertEquals(newName, reloaded.getName());
 		filestorage.deleteAccountByApp(TestConstants.APP_AUTH_TOKEN,
 				account.getId());
-		filestorage.deleteStorageByApp(TestConstants.APP_AUTH_TOKEN,
-				storage.getId());
+		filestorage.deleteStorage(TestConstants.APP_AUTH_TOKEN);
 		accounts = filestorage.getAccountsByApp(TestConstants.APP_AUTH_TOKEN);
 		Assert.assertTrue(accounts.size() == size);
 

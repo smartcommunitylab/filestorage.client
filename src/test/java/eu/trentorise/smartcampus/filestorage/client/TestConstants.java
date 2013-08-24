@@ -20,8 +20,8 @@ public class TestConstants {
 	static final String USER_AUTH_TOKEN = "";
 	static final String APP_AUTH_TOKEN = "";
 
-	static final String APPID = "smartcampus";
-	static final String BASEURL = "http://localhost:8080";
+	static final String APPID = "mobileTemplate";
+	static final String BASEURL = "http://localhost:8088/smartcampus.filestorage";
 	static final String RESOURCE_NAME = "tux.jpeg";
 	static final String RESOURCE_NAME_UPDATE = "tux1.png";
 	static final String RESOURCE_CONTENT_TYPE = "image/png";
@@ -29,6 +29,6 @@ public class TestConstants {
 	static final String USER_SECRET = "";
 	static final String APP_KEY = "";
 	static final String APP_SECRET = "";
-	static final String USERID = "";
+	static final String USERID = "1";
 
 }

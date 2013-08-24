@@ -31,7 +31,7 @@ public class FilestorageClientUserTest {
 	public void resources() throws SecurityException, FilestorageException,
 			URISyntaxException, IOException {
 		Storage storage = TestUtils.createStorage(TestConstants.APPID);
-		storage = filestorage.createStorageByApp(TestConstants.APP_AUTH_TOKEN,
+		storage = filestorage.createStorage(TestConstants.APP_AUTH_TOKEN,
 				storage);
 		Account account = TestUtils
 				.createAccount(storage, TestConstants.USERID);
@@ -92,8 +92,8 @@ public class FilestorageClientUserTest {
 
 	@Before
 	public void cleanup() throws FilestorageException {
-		List<Storage> storages = filestorage
-				.getStoragesByApp(TestConstants.APP_AUTH_TOKEN);
+
+		Storage storage = filestorage.getStorage(TestConstants.APP_AUTH_TOKEN);
 		List<Account> accounts = filestorage
 				.getAccountsByUser(TestConstants.USER_AUTH_TOKEN);
 		for (Account account : accounts) {
@@ -102,22 +102,10 @@ public class FilestorageClientUserTest {
 						account.getId());
 			}
 		}
-		for (Storage storage : storages) {
-			if (storage.getName().contains("Sample")) {
-				filestorage.deleteStorageByApp(TestConstants.APP_AUTH_TOKEN,
-						storage.getId());
-			}
+		if (storage != null) {
+			filestorage.deleteStorage(TestConstants.APP_AUTH_TOKEN);
 		}
 
-	}
-
-	@Test
-	public void storage() throws SecurityException, FilestorageException {
-		// Storage storage = TestUtils.createStorage(TestConstants.APPID);
-		// storage =
-		// filestorage.createStorageByApp(TestConstants.APP_AUTH_TOKEN,
-		// storage);
-		filestorage.getStoragesByUser(TestConstants.USER_AUTH_TOKEN);
 	}
 
 	@Test
@@ -126,7 +114,7 @@ public class FilestorageClientUserTest {
 				.getAccountsByUser(TestConstants.USER_AUTH_TOKEN);
 		int size = accounts.size();
 		Storage storage = TestUtils.createStorage(TestConstants.APPID);
-		storage = filestorage.createStorageByApp(TestConstants.APP_AUTH_TOKEN,
+		storage = filestorage.createStorage(TestConstants.APP_AUTH_TOKEN,
 				storage);
 		Account account = TestUtils
 				.createAccount(storage, TestConstants.USERID);
@@ -148,8 +136,7 @@ public class FilestorageClientUserTest {
 		Assert.assertEquals(newName, reloaded.getName());
 		filestorage.deleteAccountByUser(TestConstants.USER_AUTH_TOKEN,
 				account.getId());
-		filestorage.deleteStorageByApp(TestConstants.APP_AUTH_TOKEN,
-				storage.getId());
+		filestorage.deleteStorage(TestConstants.APP_AUTH_TOKEN);
 		accounts = filestorage.getAccountsByUser(TestConstants.USER_AUTH_TOKEN);
 		Assert.assertTrue(accounts.size() == size);
 

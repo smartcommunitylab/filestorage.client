@@ -6,7 +6,7 @@ import eu.trentorise.smartcampus.filestorage.client.model.Configuration;
 import eu.trentorise.smartcampus.filestorage.client.model.Storage;
 import eu.trentorise.smartcampus.filestorage.client.model.StorageType;
 
-public class Setup {
+public class SetupFS {
 
 	/**
 	 * @param args
@@ -15,7 +15,7 @@ public class Setup {
 	 */
 	public static void main(String[] args) throws SecurityException,
 			FilestorageException {
-		Filestorage fs = new Filestorage("https://vas-dev.smartcampuslab.it",
+		Filestorage fs = new Filestorage("http://localhost:8088",
 				"mobileTemplate");
 
 		Storage storage = new Storage();
@@ -27,7 +27,7 @@ public class Setup {
 				"yerhpkuav29wxou"), new Configuration("APP_SECRET",
 				"7lprb483fpfj8ob")));
 
-		storage = fs.createStorageByApp("b8986270-56d3-4d59-a13b-8b6963476592",
+		storage = fs.createStorage("4770e7c6-91ee-41aa-bb35-99a90460136b",
 				storage);
 		System.out.println("Create storage " + storage.getId());
 

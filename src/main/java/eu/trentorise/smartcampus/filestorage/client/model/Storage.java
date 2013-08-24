@@ -58,9 +58,11 @@ public class Storage {
 	/**
 	 * type of the storage. See {@link StorageType} for supported storages
 	 */
-
 	private StorageType storageType;
 
+	/** optional redirect URL when authorization flow is used for the storage **/
+	private String redirect;
+	
 	@XmlElementWrapper
 	@XmlElement(name = "configuration")
 	private List<Configuration> configurations;
@@ -97,6 +99,14 @@ public class Storage {
 		this.storageType = storageType;
 	}
 
+	public String getRedirect() {
+		return redirect;
+	}
+
+	public void setRedirect(String redirect) {
+		this.redirect = redirect;
+	}
+
 	public List<Configuration> getConfigurations() {
 		return configurations;
 	}
@@ -113,6 +123,7 @@ public class Storage {
 			storage.setAppId(object.getString("appId"));
 			storage.setId(object.getString("id"));
 			storage.setName(object.getString("name"));
+			storage.setRedirect(object.optString("redirect", null));
 			storage.setStorageType(StorageType.valueOf(object
 					.getString("storageType")));
 			storage.setConfigurations(Configuration.toList(object
@@ -150,6 +161,8 @@ public class Storage {
 					+ JsonUtils.toJson(storage.getAppId()) + ",");
 			writer.write(JSONObject.quote("name") + ":"
 					+ JsonUtils.toJson(storage.getName()) + ",");
+			writer.write(JSONObject.quote("redirect") + ":"
+					+ JsonUtils.toJson(storage.getRedirect()) + ",");
 			writer.write(JSONObject.quote("storageType") + ":"
 					+ JsonUtils.toJson(storage.getStorageType()) + ",");
 			writer.write(JSONObject.quote("configurations") + ":"
