@@ -70,7 +70,7 @@ public class FilestorageClientAppTest {
 		filestorage.deleteResourceByApp(TestConstants.APP_AUTH_TOKEN,
 				metadata1.getResourceId());
 
-		Resource res = filestorage.getMyResourceByApp(
+		Resource res = filestorage.getResourceByApp(
 				TestConstants.APP_AUTH_TOKEN, metadata.getResourceId());
 		Assert.assertNotNull(res);
 

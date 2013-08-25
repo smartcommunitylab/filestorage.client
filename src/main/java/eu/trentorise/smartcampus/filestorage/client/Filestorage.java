@@ -355,17 +355,17 @@ public class Filestorage {
 		return getStorage(authToken, appId, APP_OPERATION);
 	}
 
-	public Storage getStorageByApp(String authToken, String appId) throws FilestorageException {
-		return getStorage(authToken, appId, APP_OPERATION);
-	}
+//	public Storage getStorageByApp(String authToken, String appId) throws FilestorageException {
+//		return getStorage(authToken, appId, APP_OPERATION);
+//	}
 
 	public Storage getStorageByUser(String authToken) throws FilestorageException {
 		return getStorage(authToken, appId, USER_OPERATION);
 	}
 	
-	public Storage getStorageByUserAndApp(String authToken, String appId) throws FilestorageException {
-		return getStorage(authToken, appId, USER_OPERATION);
-	}
+//	public Storage getStorageByUserAndApp(String authToken, String appId) throws FilestorageException {
+//		return getStorage(authToken, appId, USER_OPERATION);
+//	}
 
 	private Storage getStorage(String authToken, String appId,
 			String operationType) throws SecurityException,
@@ -449,12 +449,12 @@ public class Filestorage {
 	 * @return {@link Resource}
 	 * @throws FilestorageException
 	 */
-	public Resource getMyResourceByApp(String authToken, String resourceId)
+	public Resource getResourceByApp(String authToken, String resourceId)
 			throws FilestorageException {
 		return getMyResource(authToken, resourceId, APP_OPERATION);
 	}
 
-	public Resource getMyResourceByUser(String authToken, String resourceId)
+	public Resource getResourceByUser(String authToken, String resourceId)
 			throws FilestorageException {
 		return getMyResource(authToken, resourceId, USER_OPERATION);
 	}
@@ -475,10 +475,10 @@ public class Filestorage {
 		}
 	}
 
-	public Resource getSharedResourceByApp(String authToken, String resourceId,
-			String userId) throws FilestorageException {
-		return getSharedResource(authToken, resourceId, userId, APP_OPERATION);
-	}
+//	public Resource getSharedResourceByApp(String authToken, String resourceId,
+//			String userId) throws FilestorageException {
+//		return getSharedResource(authToken, resourceId, userId, APP_OPERATION);
+//	}
 
 	public Resource getSharedResourceByUser(String authToken, String resourceId)
 			throws FilestorageException {

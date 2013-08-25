@@ -69,7 +69,7 @@ public class FilestorageClientUserTest {
 		filestorage.deleteResourceByUser(TestConstants.USER_AUTH_TOKEN,
 				metadata1.getResourceId());
 
-		Resource res = filestorage.getMyResourceByUser(
+		Resource res = filestorage.getResourceByUser(
 				TestConstants.USER_AUTH_TOKEN, metadata.getResourceId());
 		Assert.assertNotNull(res);
 
