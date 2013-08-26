@@ -17,11 +17,6 @@ package eu.trentorise.smartcampus.filestorage.client.model;
 
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -31,10 +26,7 @@ import org.json.JSONObject;
  * @author mirko perillo
  * 
  */
-@XmlRootElement(name = "accounts")
-@XmlAccessorType(XmlAccessType.FIELD)
 public class ListAccount {
-	@XmlElement(name = "account")
 	private List<Account> accounts;
 
 	public List<Account> getAccounts() {

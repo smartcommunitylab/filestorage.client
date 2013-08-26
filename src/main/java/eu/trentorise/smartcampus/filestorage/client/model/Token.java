@@ -22,10 +22,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,8 +36,6 @@ import org.json.JSONObject;
  * @author mirko perillo
  * 
  */
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
 public class Token {
 	/* Token data */
 	/**
@@ -110,6 +104,7 @@ public class Token {
 		this.storageType = storageType;
 	}
 
+	@SuppressWarnings("unchecked")
 	public static Token toObject(String json) {
 		try {
 			JSONObject object = new JSONObject(json);
@@ -127,6 +122,7 @@ public class Token {
 		}
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private static Map valueOf(String json) throws JSONException {
 		if (JSONObject.stringToValue(json) == JSONObject.NULL) {
 			return null;

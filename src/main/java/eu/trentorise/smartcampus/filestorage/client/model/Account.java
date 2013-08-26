@@ -20,12 +20,6 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlRootElement;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -39,8 +33,6 @@ import eu.trentorise.smartcampus.network.JsonUtils;
  * @author mirko perillo
  * 
  */
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
 public class Account {
 	/**
 	 * id of the account
@@ -70,8 +62,6 @@ public class Account {
 	/**
 	 * list of the configurations of the account storage
 	 */
-	@XmlElementWrapper
-	@XmlElement(name = "configuration")
 	private List<Configuration> configurations;
 
 	public String getUserId() {

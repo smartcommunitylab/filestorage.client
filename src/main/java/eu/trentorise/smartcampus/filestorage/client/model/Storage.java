@@ -19,12 +19,6 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlRootElement;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,8 +34,6 @@ import eu.trentorise.smartcampus.network.JsonUtils;
  * @author mirko perillo
  * 
  */
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
 public class Storage {
 	/**
 	 * id of the application account
@@ -63,8 +55,6 @@ public class Storage {
 	/** optional redirect URL when authorization flow is used for the storage **/
 	private String redirect;
 	
-	@XmlElementWrapper
-	@XmlElement(name = "configuration")
 	private List<Configuration> configurations;
 
 	public String getId() {

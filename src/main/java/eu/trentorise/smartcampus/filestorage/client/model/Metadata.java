@@ -19,10 +19,6 @@ package eu.trentorise.smartcampus.filestorage.client.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,8 +29,6 @@ import org.json.JSONObject;
  * @author mirko perillo
  * 
  */
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
 public class Metadata {
 	/**
 	 * name of the resource
