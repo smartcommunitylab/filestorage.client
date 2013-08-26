@@ -24,10 +24,10 @@ public class SetupFS {
 		storage.setStorageType(StorageType.DROPBOX);
 
 		storage.setConfigurations(Arrays.asList(new Configuration("APP_KEY",
-				"yerhpkuav29wxou"), new Configuration("APP_SECRET",
-				"7lprb483fpfj8ob")));
+				""), new Configuration("APP_SECRET",
+				"")));
 
-		storage = fs.createStorage("fb7b22f1-0c64-45e6-b0dd-61d3cb4d45ff", storage);
+		storage = fs.createStorage("", storage);
 		System.out.println("Create storage " + storage.getId());
 
 	}
