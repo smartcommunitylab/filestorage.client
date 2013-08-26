@@ -54,6 +54,7 @@ public class Filestorage {
 	protected static final String MY_RESOURCE = "resource/";
 	protected static final String METADATA = "metadata/";
 	protected static final String SOCIAL = "updatesocial/";
+	protected static final String REQUEST_AUTH = "requestAuth/";
 
 	public static final String APP_OPERATION = "app/";
 	public static final String USER_OPERATION = "user/";
@@ -79,7 +80,7 @@ public class Filestorage {
 	 * @param resource
 	 *            the resource to store
 	 * @param authToken
-	 *            the authentication token
+	 *            the user access token
 	 * @param accountId
 	 *            id of the user storage account in which store the resource
 	 * @param createSocialData
@@ -95,6 +96,20 @@ public class Filestorage {
 				USER_OPERATION);
 	}
 
+	/**
+	 * stores a resource in given user storage account
+	 * 
+	 * @param resource
+	 *            the resource to store
+	 * @param authToken
+	 *            client access token
+	 * @param accountId
+	 *            id of the user storage account in which store the resource
+	 * @param createSocialData
+	 *            true to create social entity associated to the resource
+	 * @return information about resources
+	 * @throws FilestorageException
+	 */
 	public Metadata storeResourceByApp(File resource, String authToken,
 			String accountId, boolean createSocialData)
 			throws FilestorageException {
@@ -102,6 +117,20 @@ public class Filestorage {
 				APP_OPERATION);
 	}
 
+	/**
+	 * stores a resource in given user storage account
+	 * 
+	 * @param resource
+	 *            the resource to store
+	 * @param authToken
+	 *            client access token
+	 * @param accountId
+	 *            id of the user storage account in which store the resource
+	 * @param createSocialData
+	 *            true to create social entity associated to the resource
+	 * @return information about resources
+	 * @throws FilestorageException
+	 */
 	public Metadata storeResourceByApp(byte[] resourceContent,
 			String resourceName, String resourceContentType, String authToken,
 			String accountId, boolean createSocialData)
@@ -111,6 +140,20 @@ public class Filestorage {
 				APP_OPERATION);
 	}
 
+	/**
+	 * stores a resource in given user storage account
+	 * 
+	 * @param resource
+	 *            the resource to store
+	 * @param authToken
+	 *            user access token
+	 * @param accountId
+	 *            id of the user storage account in which store the resource
+	 * @param createSocialData
+	 *            true to create social entity associated to the resource
+	 * @return information about resources
+	 * @throws FilestorageException
+	 */
 	public Metadata storeResourceByUser(byte[] resourceContent,
 			String resourceName, String resourceContentType, String authToken,
 			String accountId, boolean createSocialData)
@@ -160,7 +203,7 @@ public class Filestorage {
 	 * deletes a resource
 	 * 
 	 * @param authToken
-	 *            the authentication token
+	 *            user access token
 	 * @param resourceId
 	 *            if of resource to remove
 	 * @throws FilestorageException
@@ -170,6 +213,15 @@ public class Filestorage {
 		deleteResource(authToken, resourceId, USER_OPERATION);
 	}
 
+	/**
+	 * deletes a resource
+	 * 
+	 * @param authToken
+	 *            client access token
+	 * @param resourceId
+	 *            if of resource to remove
+	 * @throws FilestorageException
+	 */
 	public void deleteResourceByApp(String authToken, String resourceId)
 			throws FilestorageException {
 		deleteResource(authToken, resourceId, APP_OPERATION);
@@ -192,7 +244,7 @@ public class Filestorage {
 	 * updates a resource
 	 * 
 	 * @param authToken
-	 *            authentication token
+	 *            user access token
 	 * @param accountId
 	 *            id of the user storage account
 	 * @param resourceId
@@ -206,6 +258,19 @@ public class Filestorage {
 		updateResource(authToken, resourceId, resource, USER_OPERATION);
 	}
 
+	/**
+	 * updates a resource
+	 * 
+	 * @param authToken
+	 *           client access token
+	 * @param accountId
+	 *            id of the user storage account
+	 * @param resourceId
+	 *            id of the resource to update
+	 * @param resource
+	 *            new resource content
+	 * @throws FilestorageException
+	 */
 	public void updateResourceByApp(String authToken, String resourceId,
 			File resource) throws FilestorageException {
 		updateResource(authToken, resourceId, resource, APP_OPERATION);
@@ -226,19 +291,27 @@ public class Filestorage {
 		}
 	}
 
-/**
- 	 * retrieves all the user storage accounts binded to the application name and to the authentication token
-	 * @param authToken the authentication token
+	/**
+ 	 * retrieves all the user storage accounts bound to the application name and to the access token
+	 * @param authToken user access token
 	 * @return list of {@link Account)
 	 * @throws FilestorageException
- * @throws RemoteException 
- * @throws SecurityException 
+	 * @throws RemoteException 
+	 * @throws SecurityException 
 	 */
 	public List<Account> getAccountsByUser(String authToken)
 			throws FilestorageException, SecurityException {
 		return getAccounts(authToken, USER_OPERATION);
 	}
 
+	/**
+ 	 * retrieves all the user storage accounts bound to the application name
+	 * @param authToken client access token
+	 * @return list of {@link Account)
+	 * @throws FilestorageException
+	 * @throws RemoteException 
+	 * @throws SecurityException 
+	 */
 	public List<Account> getAccountsByApp(String authToken)
 			throws FilestorageException, SecurityException {
 		return getAccounts(authToken, APP_OPERATION);
@@ -256,11 +329,27 @@ public class Filestorage {
 		}
 	}
 
+	/**
+ 	 * retrieves the specified user storage account 
+	 * @param authToken client access token
+	 * @return list of {@link Account)
+	 * @throws FilestorageException
+	 * @throws RemoteException 
+	 * @throws SecurityException 
+	 */
 	public Account getAccountByApp(String authToken, String accountId)
 			throws FilestorageException {
 		return getAccount(authToken, accountId, APP_OPERATION);
 	}
 
+	/**
+ 	 * retrieves the specified user storage account 
+	 * @param authToken user access token
+	 * @return list of {@link Account)
+	 * @throws FilestorageException
+	 * @throws RemoteException 
+	 * @throws SecurityException 
+	 */
 	public Account getAccountByUser(String authToken, String accountId)
 			throws FilestorageException {
 		return getAccount(authToken, accountId, USER_OPERATION);
@@ -280,11 +369,23 @@ public class Filestorage {
 		}
 	}
 
+	/**
+	 * Delete the specified user account
+	 * @param authToken client access token 
+	 * @param accountId account ID
+	 * @throws FilestorageException
+	 */
 	public void deleteAccountByApp(String authToken, String accountId)
 			throws FilestorageException {
 		deleteAccount(authToken, accountId, APP_OPERATION);
 	}
 
+	/**
+	 * Delete the specified user account
+	 * @param authToken user access token 
+	 * @param accountId account ID
+	 * @throws FilestorageException
+	 */
 	public void deleteAccountByUser(String authToken, String accountId)
 			throws FilestorageException {
 		deleteAccount(authToken, accountId, USER_OPERATION);
@@ -302,11 +403,25 @@ public class Filestorage {
 		}
 	}
 
+	/**
+	 * Create a new user storage account
+	 * @param authToken client access token
+	 * @param account {@link Account} data. Field {@link Account#appId} is required 
+	 * @return
+	 * @throws FilestorageException
+	 */
 	public Account createAccountByApp(String authToken, Account account)
 			throws FilestorageException {
 		return createAccount(authToken, account, APP_OPERATION);
 	}
 
+	/**
+	 * Create a new user storage account
+	 * @param authToken user access token
+	 * @param account {@link Account} data. Field {@link Account#appId} is required 
+	 * @return
+	 * @throws FilestorageException
+	 */
 	public Account createAccountByUser(String authToken, Account account)
 			throws FilestorageException {
 		return createAccount(authToken, account, USER_OPERATION);
@@ -327,11 +442,23 @@ public class Filestorage {
 		}
 	}
 
+	/**
+	 * Update user storage account
+	 * @param authToken client access token
+	 * @param account {@link Account} to update 
+	 * @throws FilestorageException
+	 */
 	public void updateAccountByApp(String authToken, Account account)
 			throws FilestorageException {
 		updateAccount(authToken, account, APP_OPERATION);
 	}
 
+	/**
+	 * Update user storage account
+	 * @param authToken user access token
+	 * @param account {@link Account} to update 
+	 * @throws FilestorageException
+	 */
 	public void updateAccountByUser(String authToken, Account account)
 			throws FilestorageException {
 		updateAccount(authToken, account, USER_OPERATION);
@@ -351,6 +478,12 @@ public class Filestorage {
 		}
 	}
 
+	/**
+	 * Get storage registration information
+	 * @param authToken client access token
+	 * @return {@link Storage} instance
+	 * @throws FilestorageException
+	 */
 	public Storage getStorage(String authToken) throws FilestorageException {
 		return getStorage(authToken, appId, APP_OPERATION);
 	}
@@ -359,9 +492,9 @@ public class Filestorage {
 //		return getStorage(authToken, appId, APP_OPERATION);
 //	}
 
-	public Storage getStorageByUser(String authToken) throws FilestorageException {
-		return getStorage(authToken, appId, USER_OPERATION);
-	}
+//	public Storage getStorageByUser(String authToken) throws FilestorageException {
+//		return getStorage(authToken, appId, USER_OPERATION);
+//	}
 	
 //	public Storage getStorageByUserAndApp(String authToken, String appId) throws FilestorageException {
 //		return getStorage(authToken, appId, USER_OPERATION);
@@ -380,6 +513,14 @@ public class Filestorage {
 		}
 	}
 
+	/**
+	 * Create and register a new storage.
+	 * @param authToken client access token
+	 * @param storage {@link Storage} to store
+	 * @return registered {@link Storage} instance
+	 * @throws SecurityException
+	 * @throws FilestorageException
+	 */
 	public Storage createStorage(String authToken, Storage storage)
 			throws SecurityException, FilestorageException {
 		return createStorage(authToken, storage, APP_OPERATION);
@@ -400,6 +541,12 @@ public class Filestorage {
 		}
 	}
 
+	/**
+	 * Delete storage registration
+	 * @param authToken client access token
+	 * @return true if the operation was successful
+	 * @throws FilestorageException
+	 */
 	public boolean deleteStorage(String authToken)
 			throws FilestorageException {
 		return deleteStorage(authToken, APP_OPERATION);
@@ -418,6 +565,13 @@ public class Filestorage {
 		}
 	}
 
+	/**
+	 * Update storage registration information
+	 * @param authToken client access token
+	 * @param storage {@link Storage} instance to update
+	 * @return
+	 * @throws FilestorageException
+	 */
 	public Storage updateStorage(String authToken, Storage storage)
 			throws FilestorageException {
 		return updateStorage(authToken, storage, APP_OPERATION);
@@ -440,10 +594,10 @@ public class Filestorage {
 	}
 
 	/**
-	 * retrieves an owned resource
+	 * retrieves a user resource
 	 * 
 	 * @param authToken
-	 *            authentication token
+	 *            client access token
 	 * @param resourceId
 	 *            id of the resource
 	 * @return {@link Resource}
@@ -454,6 +608,16 @@ public class Filestorage {
 		return getMyResource(authToken, resourceId, APP_OPERATION);
 	}
 
+	/**
+	 * retrieves a user resource
+	 * 
+	 * @param authToken
+	 *            user access token
+	 * @param resourceId
+	 *            id of the resource
+	 * @return {@link Resource}
+	 * @throws FilestorageException
+	 */
 	public Resource getResourceByUser(String authToken, String resourceId)
 			throws FilestorageException {
 		return getMyResource(authToken, resourceId, USER_OPERATION);
@@ -475,11 +639,27 @@ public class Filestorage {
 		}
 	}
 
+	/**
+	 * retrieves the resource shared with the user
+	 * @param authToken client access token
+	 * @param resourceId resource ID
+	 * @param userId user ID
+	 * @return {@link Resource} data
+	 * @throws FilestorageException
+	 */
 	public Resource getSharedResourceByApp(String authToken, String resourceId,
 			String userId) throws FilestorageException {
 		return getSharedResource(authToken, resourceId, userId, APP_OPERATION);
 	}
 
+	/**
+	 * retrieves the resource shared with the user
+	 * @param authToken user access token
+	 * @param resourceId resource ID
+	 * @param userId user ID
+	 * @return {@link Resource} data
+	 * @throws FilestorageException
+	 */
 	public Resource getSharedResourceByUser(String authToken, String resourceId)
 			throws FilestorageException {
 		return getSharedResource(authToken, resourceId, null, USER_OPERATION);
@@ -506,7 +686,7 @@ public class Filestorage {
 	 * owned be the user.
 	 * 
 	 * @param authToken
-	 *            authentication token
+	 *            client access token
 	 * @param resourceId
 	 *            id of the resource
 	 * @param entityId
@@ -514,7 +694,6 @@ public class Filestorage {
 	 * @return updated information about resource
 	 * @throws FilestorageException
 	 */
-
 	public Metadata updateSocialDataByApp(String authToken, String resourceId,
 			String entityId) throws FilestorageException {
 		return updateSocialData(authToken, resourceId, entityId, APP_OPERATION);
@@ -538,7 +717,7 @@ public class Filestorage {
 	 * retrieves the resource metadata
 	 * 
 	 * @param authToken
-	 *            authentication token
+	 *            user access token
 	 * @param resourceId
 	 *            id of the resource
 	 * @return the {@link Metadata} binded to the given resource
@@ -549,6 +728,16 @@ public class Filestorage {
 		return getResourceMetadata(authToken, resourceId, USER_OPERATION);
 	}
 
+	/**
+	 * retrieves the resource metadata
+	 * 
+	 * @param authToken
+	 *            client access token
+	 * @param resourceId
+	 *            id of the resource
+	 * @return the {@link Metadata} binded to the given resource
+	 * @throws FilestorageException
+	 */
 	public Metadata getResourceMetadataByApp(String authToken, String resourceId)
 			throws FilestorageException {
 		return getResourceMetadata(authToken, resourceId, APP_OPERATION);
@@ -575,6 +764,18 @@ public class Filestorage {
 		}
 	}
 
+	/**
+	 * retrieves all the resource metadata for the application
+	 * 
+	 * @param authToken
+	 *            client access token
+	 * @param position
+	 *            position to start from in the list
+	 * @param size
+	 *            number of results to return
+	 * @return the {@link Metadata} binded to the given resource
+	 * @throws FilestorageException
+	 */
 	public List<Metadata> getAllResourceMetadataByApp(String authToken,
 			Integer position, Integer size) throws FilestorageException {
 		Map<String, Object> parameters = new HashMap<String, Object>();
@@ -588,6 +789,18 @@ public class Filestorage {
 				parameters.size() == 0 ? null : parameters);
 	}
 
+	/**
+	 * retrieves all the resource metadata for the user
+	 * 
+	 * @param authToken
+	 *            user access token
+	 * @param position
+	 *            position to start from in the list
+	 * @param size
+	 *            number of results to return
+	 * @return the {@link Metadata} binded to the given resource
+	 * @throws FilestorageException
+	 */
 	public List<Metadata> getAllResourceMetadataByUser(String authToken,
 			Integer position, Integer size) throws FilestorageException {
 		Map<String, Object> parameters = new HashMap<String, Object>();
@@ -658,4 +871,19 @@ public class Filestorage {
 		return retriever;
 	}
 
+	/**
+	 * retrieves the authorization URL to use for the storage authorization procedure
+	 * @param token
+	 * @return
+	 * @throws FilestorageException
+	 */
+	public String getAuthorizationURL(String token) throws FilestorageException {
+		try {
+			String response = RemoteConnector.getJSON(serverUrl, REQUEST_AUTH+appId, token);
+			return response;
+		} catch (RemoteException e) {
+			throw new FilestorageException(e);
+		}
+	}
+	
 }
