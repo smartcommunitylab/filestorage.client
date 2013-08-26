@@ -292,16 +292,16 @@ public class Filestorage {
 	}
 
 	/**
- 	 * retrieves all the user storage accounts bound to the application name and to the access token
+ 	 * retrieves the user storage account bound to the application name and to the access token
 	 * @param authToken user access token
-	 * @return list of {@link Account)
+	 * @return {@link Account} instance
 	 * @throws FilestorageException
 	 * @throws RemoteException 
 	 * @throws SecurityException 
 	 */
-	public List<Account> getAccountsByUser(String authToken)
+	public Account getAccountByUser(String authToken)
 			throws FilestorageException, SecurityException {
-		return getAccounts(authToken, USER_OPERATION);
+		return getAccount(authToken, null, USER_OPERATION);
 	}
 
 	/**
@@ -342,25 +342,13 @@ public class Filestorage {
 		return getAccount(authToken, accountId, APP_OPERATION);
 	}
 
-	/**
- 	 * retrieves the specified user storage account 
-	 * @param authToken user access token
-	 * @return list of {@link Account)
-	 * @throws FilestorageException
-	 * @throws RemoteException 
-	 * @throws SecurityException 
-	 */
-	public Account getAccountByUser(String authToken, String accountId)
-			throws FilestorageException {
-		return getAccount(authToken, accountId, USER_OPERATION);
-	}
-
 	private Account getAccount(String authToken, String accountId,
 			String operationType) throws FilestorageException {
 		try {
+			String service = ACCOUNT + operationType + appId;
+			if (accountId != null) service += "/" + accountId;
 			String response = MultipartRemoteConnector
-					.getJSON(serverUrl, ACCOUNT + operationType
-							+ appId + "/" + accountId, authToken);
+					.getJSON(serverUrl,  service, authToken);
 			return Account.toObject(response);
 		} catch (RemoteException e) {
 			// logger.error(
@@ -383,19 +371,19 @@ public class Filestorage {
 	/**
 	 * Delete the specified user account
 	 * @param authToken user access token 
-	 * @param accountId account ID
 	 * @throws FilestorageException
 	 */
-	public void deleteAccountByUser(String authToken, String accountId)
+	public void deleteAccountByUser(String authToken)
 			throws FilestorageException {
-		deleteAccount(authToken, accountId, USER_OPERATION);
+		deleteAccount(authToken, null, USER_OPERATION);
 	}
 
 	private void deleteAccount(String authToken, String accountId,
 			String operationType) throws FilestorageException {
 		try {
-			MultipartRemoteConnector.deleteJSON(serverUrl, ACCOUNT
-					+ operationType + appId + "/" + accountId, authToken);
+			String service = ACCOUNT + operationType + appId;
+			if (accountId != null) service += "/" + accountId;
+			MultipartRemoteConnector.deleteJSON(serverUrl, service, authToken);
 		} catch (RemoteException e) {
 			// logger.error(
 			// String.format("Exception getting account %s", accountId), e);
@@ -445,12 +433,12 @@ public class Filestorage {
 	/**
 	 * Update user storage account
 	 * @param authToken client access token
-	 * @param account {@link Account} to update 
+	 * @param account {@link Account} to update. {@link Account#getId()} should not be null 
 	 * @throws FilestorageException
 	 */
 	public void updateAccountByApp(String authToken, Account account)
 			throws FilestorageException {
-		updateAccount(authToken, account, APP_OPERATION);
+		updateAccount(authToken, account, account.getId(), APP_OPERATION);
 	}
 
 	/**
@@ -461,14 +449,16 @@ public class Filestorage {
 	 */
 	public void updateAccountByUser(String authToken, Account account)
 			throws FilestorageException {
-		updateAccount(authToken, account, USER_OPERATION);
+		updateAccount(authToken, account, null, USER_OPERATION);
 	}
 
-	private void updateAccount(String authToken, Account account,
+	private void updateAccount(String authToken, Account account, String accountId,
 			String operationType) throws FilestorageException {
 		try {
-			MultipartRemoteConnector.putJSON(serverUrl, ACCOUNT
-					+ operationType + appId + "/" + account.getId(),
+			String service = ACCOUNT + operationType + appId;
+			if (accountId != null) service += "/" + accountId;
+
+			MultipartRemoteConnector.putJSON(serverUrl, service,
 					Account.toJson(account), authToken);
 		} catch (RemoteException e) {
 			// logger.error(String.format(

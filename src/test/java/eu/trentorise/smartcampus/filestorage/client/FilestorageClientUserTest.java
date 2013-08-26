@@ -94,13 +94,10 @@ public class FilestorageClientUserTest {
 	public void cleanup() throws FilestorageException {
 
 		Storage storage = filestorage.getStorage(TestConstants.APP_AUTH_TOKEN);
-		List<Account> accounts = filestorage
-				.getAccountsByUser(TestConstants.USER_AUTH_TOKEN);
-		for (Account account : accounts) {
-			if (account.getName().contains("Sample")) {
-				filestorage.deleteAccountByUser(TestConstants.USER_AUTH_TOKEN,
-						account.getId());
-			}
+		Account account = filestorage
+				.getAccountByUser(TestConstants.USER_AUTH_TOKEN);
+		if (account != null) {
+			filestorage.deleteAccountByUser(TestConstants.USER_AUTH_TOKEN);
 		}
 		if (storage != null) {
 			filestorage.deleteStorage(TestConstants.APP_AUTH_TOKEN);
@@ -110,9 +107,6 @@ public class FilestorageClientUserTest {
 
 	@Test
 	public void account() throws SecurityException, FilestorageException {
-		List<Account> accounts = filestorage
-				.getAccountsByUser(TestConstants.USER_AUTH_TOKEN);
-		int size = accounts.size();
 		Storage storage = TestUtils.createStorage(TestConstants.APPID);
 		storage = filestorage.createStorage(TestConstants.APP_AUTH_TOKEN,
 				storage);
@@ -121,24 +115,21 @@ public class FilestorageClientUserTest {
 		account = filestorage.createAccountByUser(
 				TestConstants.USER_AUTH_TOKEN, account);
 		Assert.assertTrue(account != null && account.getId() != null);
-		accounts = filestorage.getAccountsByUser(TestConstants.USER_AUTH_TOKEN);
-		Assert.assertTrue(accounts.size() == size + 1);
+		account = filestorage.getAccountByUser(TestConstants.USER_AUTH_TOKEN);
+		Assert.assertNotNull(account);
 
-		Account reloaded = filestorage.getAccountByUser(
-				TestConstants.USER_AUTH_TOKEN, account.getId());
+		Account reloaded = filestorage.getAccountByUser(TestConstants.USER_AUTH_TOKEN);
 		Assert.assertTrue(reloaded.getId().equals(account.getId()));
 
 		String newName = "Change name";
 		account.setName(newName);
 		filestorage.updateAccountByUser(TestConstants.USER_AUTH_TOKEN, account);
-		reloaded = filestorage.getAccountByUser(TestConstants.USER_AUTH_TOKEN,
-				account.getId());
+		reloaded = filestorage.getAccountByUser(TestConstants.USER_AUTH_TOKEN);
 		Assert.assertEquals(newName, reloaded.getName());
-		filestorage.deleteAccountByUser(TestConstants.USER_AUTH_TOKEN,
-				account.getId());
+		filestorage.deleteAccountByUser(TestConstants.USER_AUTH_TOKEN);
 		filestorage.deleteStorage(TestConstants.APP_AUTH_TOKEN);
-		accounts = filestorage.getAccountsByUser(TestConstants.USER_AUTH_TOKEN);
-		Assert.assertTrue(accounts.size() == size);
+		account = filestorage.getAccountByUser(TestConstants.USER_AUTH_TOKEN);
+		Assert.assertNull(account);
 
 	}
 
