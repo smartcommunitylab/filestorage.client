@@ -475,10 +475,10 @@ public class Filestorage {
 		}
 	}
 
-//	public Resource getSharedResourceByApp(String authToken, String resourceId,
-//			String userId) throws FilestorageException {
-//		return getSharedResource(authToken, resourceId, userId, APP_OPERATION);
-//	}
+	public Resource getSharedResourceByApp(String authToken, String resourceId,
+			String userId) throws FilestorageException {
+		return getSharedResource(authToken, resourceId, userId, APP_OPERATION);
+	}
 
 	public Resource getSharedResourceByUser(String authToken, String resourceId)
 			throws FilestorageException {
