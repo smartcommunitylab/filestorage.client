@@ -55,10 +55,6 @@ public class Metadata {
 	 */
 	private String accountId;
 	/**
-	 * application storage account id
-	 */
-	private String storageId;
-	/**
 	 * application which resource is binded to
 	 */
 	private String appId;
@@ -147,14 +143,6 @@ public class Metadata {
 		this.fileExternalId = fileExternalId;
 	}
 
-	public String getStorageId() {
-		return storageId;
-	}
-
-	public void setStorageId(String storageId) {
-		this.storageId = storageId;
-	}
-
 	public String getAppId() {
 		return appId;
 	}
@@ -175,7 +163,6 @@ public class Metadata {
 		try {
 			JSONObject object = new JSONObject(json);
 			Metadata result = new Metadata();
-			result.setStorageId(object.getString("storageId"));
 			result.setAccountId(object.getString("accountId"));
 			result.setAppId(object.getString("appId"));
 			result.setContentType(object.getString("contentType"));

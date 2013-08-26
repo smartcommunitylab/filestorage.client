@@ -43,11 +43,6 @@ public class Account {
 	 */
 	private String userId;
 	/**
-	 * type of the storage
-	 */
-	private String storageId;
-
-	/**
 	 * application name binded to user storage account
 	 */
 	private String appId;
@@ -96,14 +91,6 @@ public class Account {
 		this.id = id;
 	}
 
-	public String getStorageId() {
-		return storageId;
-	}
-
-	public void setStorageId(String storageId) {
-		this.storageId = storageId;
-	}
-
 	public String getName() {
 		return name;
 	}
@@ -126,7 +113,6 @@ public class Account {
 			object = new JSONObject(json);
 			Account account = new Account();
 			account.setName(object.getString("name"));
-			account.setStorageId(object.getString("storageId"));
 			account.setAppId(object.getString("appId"));
 			account.setId(object.getString("id"));
 			account.setUserId(object.getString("userId"));
@@ -169,8 +155,6 @@ public class Account {
 					+ JsonUtils.toJson(account.getName()) + ",");
 			writer.write(JSONObject.quote("storageType") + ":"
 					+ JsonUtils.toJson(account.getStorageType()) + ",");
-			writer.write(JSONObject.quote("storageId") + ":"
-					+ JsonUtils.toJson(account.getStorageId()) + ",");
 			writer.write(JSONObject.quote("configurations") + ":"
 					+ JsonUtils.toJson(account.getConfigurations()) + ",");
 			writer.write(JSONObject.quote("appId") + ":"

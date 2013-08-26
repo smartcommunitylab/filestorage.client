@@ -25,7 +25,6 @@ public class TestUtils {
 		Account account = new Account();
 		account.setAppId(storage.getAppId());
 		account.setName("Sample account " + System.currentTimeMillis());
-		account.setStorageId(storage.getId());
 		account.setStorageType(storage.getStorageType());
 		account.setUserId(userId);
 		account.setConfigurations(createSampleAccountConfigurations());
