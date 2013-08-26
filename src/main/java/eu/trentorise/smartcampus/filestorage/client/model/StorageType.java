@@ -16,6 +16,9 @@
 
 package eu.trentorise.smartcampus.filestorage.client.model;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Types of storage
  * 
@@ -23,5 +26,19 @@ package eu.trentorise.smartcampus.filestorage.client.model;
  * 
  */
 public enum StorageType {
-	DROPBOX
+	DROPBOX;
+
+	public static StorageType toObject(String json) {
+		JSONObject object;
+		try {
+			object = new JSONObject(json);
+			return StorageType.valueOf(object.getString("storageType"));
+		} catch (JSONException e) {
+			return null;
+		}
+	}
+
+	public static String toJson(StorageType storageType) {
+		return JSONObject.quote(storageType.name());
+	}
 }

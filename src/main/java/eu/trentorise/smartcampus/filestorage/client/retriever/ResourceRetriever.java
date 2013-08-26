@@ -52,15 +52,22 @@ public abstract class ResourceRetriever {
 	}
 
 	public Resource getResource(String authToken, String resourceId,
-			Token resourceToken) throws ClientProtocolException, IOException,
-			FilestorageException {
+			Token resourceToken, String operationType)
+			throws ClientProtocolException, IOException, FilestorageException {
 
 		Resource resource = new Resource();
 		resource.setContent(getFileContent(resourceToken));
 
-		Metadata metadata = filestorage.getResourceMetadata(authToken,
-				resourceId);
-		resource.setId(metadata.getRid());
+		Metadata metadata = null;
+		if (operationType.equals(Filestorage.USER_OPERATION)) {
+			metadata = filestorage.getResourceMetadataByUser(authToken,
+					resourceId);
+		}
+		if (operationType.equals(Filestorage.APP_OPERATION)) {
+			metadata = filestorage.getResourceMetadataByApp(authToken,
+					resourceId);
+		}
+		resource.setId(metadata.getResourceId());
 		resource.setContentType(metadata.getContentType());
 		resource.setName(metadata.getName());
 		return resource;

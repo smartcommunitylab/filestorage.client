@@ -16,9 +16,15 @@
 
 package eu.trentorise.smartcampus.filestorage.client.model;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import eu.trentorise.smartcampus.network.JsonUtils;
 
 /**
  * <i>Configuration</i> is the representation of a configuration in a
@@ -27,8 +33,6 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author mirko perillo
  * 
  */
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
 public class Configuration {
 	/**
 	 * name of configuration
@@ -64,4 +68,46 @@ public class Configuration {
 		this.value = value;
 	}
 
+	public static Configuration toObject(String json) {
+		JSONObject object = new JSONObject();
+		try {
+			Configuration conf = new Configuration();
+			conf.setName(object.getString("name"));
+			conf.setValue(object.getString("value"));
+			return conf;
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	public static List<Configuration> toList(String json) {
+		try {
+			JSONArray array = new JSONArray(json);
+			List<Configuration> listElements = new ArrayList<Configuration>();
+			for (int i = 0; array.optString(i).length() > 0; i++) {
+				String subElement = array.getString(i);
+				if (subElement != null) {
+					listElements.add(toObject(subElement));
+				}
+			}
+			return listElements;
+		} catch (JSONException e) {
+			return null;
+		}
+	}
+
+	public static String toJson(Configuration conf) {
+		try {
+			StringWriter writer = new StringWriter();
+			writer.write("{");
+			writer.write(JSONObject.quote("name") + ":"
+					+ JsonUtils.toJson(conf.getName()) + ",");
+			writer.write(JSONObject.quote("value") + ":"
+					+ JsonUtils.toJson(conf.getValue()));
+			writer.write("}");
+			return writer.toString();
+		} catch (NullPointerException e) {
+			return null;
+		}
+	}
 }
