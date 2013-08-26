@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import eu.trentorise.smartcampus.network.JsonUtils;
@@ -119,7 +118,7 @@ public class Storage {
 			storage.setConfigurations(Configuration.toList(object
 					.getString("configurations")));
 			return storage;
-		} catch (JSONException e) {
+		} catch (Exception e) {
 			return null;
 		}
 
@@ -136,7 +135,7 @@ public class Storage {
 				}
 			}
 			return listElements;
-		} catch (JSONException e) {
+		} catch (Exception e) {
 			return null;
 		}
 	}

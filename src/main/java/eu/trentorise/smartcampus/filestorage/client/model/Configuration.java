@@ -75,7 +75,7 @@ public class Configuration {
 			conf.setName(object.getString("name"));
 			conf.setValue(object.getString("value"));
 			return conf;
-		} catch (JSONException e) {
+		} catch (Exception e) {
 			return null;
 		}
 	}

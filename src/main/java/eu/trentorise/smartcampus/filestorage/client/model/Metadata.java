@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -174,7 +173,7 @@ public class Metadata {
 			result.setSize(object.getLong("size"));
 			result.setSocialId(object.getString("socialId"));
 			return result;
-		} catch (JSONException e) {
+		} catch (Exception e) {
 			return null;
 		}
 	}
@@ -190,7 +189,7 @@ public class Metadata {
 				}
 			}
 			return listElements;
-		} catch (JSONException e) {
+		} catch (Exception e) {
 			return null;
 		}
 	}

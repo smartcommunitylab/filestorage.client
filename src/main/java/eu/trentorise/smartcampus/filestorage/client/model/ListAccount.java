@@ -17,7 +17,6 @@ package eu.trentorise.smartcampus.filestorage.client.model;
 
 import java.util.List;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -44,7 +43,7 @@ public class ListAccount {
 			listAccount
 					.setAccounts(Account.toList(object.getString("accounts")));
 			return listAccount;
-		} catch (JSONException e) {
+		} catch (Exception e) {
 			return null;
 		}
 	}

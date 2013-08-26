@@ -117,7 +117,7 @@ public class Token {
 			result.setHttpHeaders(valueOf(object.getString("httpHeaders")));
 
 			return result;
-		} catch (JSONException e) {
+		} catch (Exception e) {
 			return null;
 		}
 	}
@@ -149,7 +149,7 @@ public class Token {
 				}
 			}
 			return listElements;
-		} catch (JSONException e) {
+		} catch (Exception e) {
 			return null;
 		}
 	}

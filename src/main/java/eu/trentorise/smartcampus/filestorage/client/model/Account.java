@@ -121,7 +121,7 @@ public class Account {
 			account.setStorageType(StorageType.valueOf(object
 					.getString("storageType")));
 			return account;
-		} catch (JSONException e) {
+		} catch (Exception e) {
 			return null;
 		}
 
