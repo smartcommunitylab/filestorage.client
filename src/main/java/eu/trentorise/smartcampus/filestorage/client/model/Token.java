@@ -124,17 +124,18 @@ public class Token {
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private static Map valueOf(String json) throws JSONException {
-		if (JSONObject.stringToValue(json) == JSONObject.NULL) {
+		try {
+			Map object = new HashMap();
+			JSONObject jsonObj = new JSONObject(json);
+			Iterator<String> iter = jsonObj.keys();
+			while (iter.hasNext()) {
+				String key = iter.next();
+				object.put(key, jsonObj.get(key));
+			}
+			return object;
+		} catch (Exception e) {
 			return null;
 		}
-		Map object = new HashMap();
-		JSONObject jsonObj = new JSONObject(json);
-		Iterator<String> iter = jsonObj.keys();
-		while (iter.hasNext()) {
-			String key = iter.next();
-			object.put(key, jsonObj.get(key));
-		}
-		return object;
 
 	}
 
