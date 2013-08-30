@@ -16,15 +16,7 @@
 
 package eu.trentorise.smartcampus.filestorage.client.model;
 
-import java.io.StringWriter;
-import java.util.ArrayList;
 import java.util.List;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import eu.trentorise.smartcampus.network.JsonUtils;
 
 /**
  * <i>Account</i> contains all the informations about a user storage account. A
@@ -105,64 +97,5 @@ public class Account {
 
 	public void setAppId(String appId) {
 		this.appId = appId;
-	}
-
-	public static Account toObject(String json) {
-		JSONObject object;
-		try {
-			object = new JSONObject(json);
-			Account account = new Account();
-			account.setName(object.getString("name"));
-			account.setAppId(object.getString("appId"));
-			account.setId(object.getString("id"));
-			account.setUserId(object.getString("userId"));
-			account.setConfigurations(Configuration.toList(object
-					.getString("configurations")));
-			account.setStorageType(StorageType.valueOf(object
-					.getString("storageType")));
-			return account;
-		} catch (Exception e) {
-			return null;
-		}
-
-	}
-
-	public static List<Account> toList(String json) {
-		try {
-			JSONArray array = new JSONArray(json);
-			List<Account> listElements = new ArrayList<Account>();
-			for (int i = 0; array.optString(i).length() > 0; i++) {
-				String subElement = array.getString(i);
-				if (subElement != null) {
-					listElements.add(toObject(subElement));
-				}
-			}
-			return listElements;
-		} catch (JSONException e) {
-			return null;
-		}
-	}
-
-	public static String toJson(Account account) {
-		try {
-			StringWriter writer = new StringWriter();
-			writer.write("{");
-			writer.write(JSONObject.quote("id") + ":"
-					+ JsonUtils.toJson(account.getId()) + ",");
-			writer.write(JSONObject.quote("userId") + ":"
-					+ JsonUtils.toJson(account.getUserId()) + ",");
-			writer.write(JSONObject.quote("name") + ":"
-					+ JsonUtils.toJson(account.getName()) + ",");
-			writer.write(JSONObject.quote("storageType") + ":"
-					+ JsonUtils.toJson(account.getStorageType()) + ",");
-			writer.write(JSONObject.quote("configurations") + ":"
-					+ JsonUtils.toJson(account.getConfigurations()) + ",");
-			writer.write(JSONObject.quote("appId") + ":"
-					+ JsonUtils.toJson(account.getAppId()));
-			writer.write("}");
-			return writer.toString();
-		} catch (NullPointerException e) {
-			return null;
-		}
 	}
 }

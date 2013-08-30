@@ -15,14 +15,7 @@
  ******************************************************************************/
 package eu.trentorise.smartcampus.filestorage.client.model;
 
-import java.io.StringWriter;
-import java.util.ArrayList;
 import java.util.List;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import eu.trentorise.smartcampus.network.JsonUtils;
 
 /**
  * <i>ApplicationAccount</i> defines all the informations about a storage
@@ -102,65 +95,6 @@ public class Storage {
 
 	public void setConfigurations(List<Configuration> configurations) {
 		this.configurations = configurations;
-	}
-
-	public static Storage toObject(String json) {
-		JSONObject object;
-		try {
-			object = new JSONObject(json);
-			Storage storage = new Storage();
-			storage.setAppId(object.getString("appId"));
-			storage.setId(object.getString("id"));
-			storage.setName(object.getString("name"));
-			storage.setRedirect(object.optString("redirect", null));
-			storage.setStorageType(StorageType.valueOf(object
-					.getString("storageType")));
-			storage.setConfigurations(Configuration.toList(object
-					.getString("configurations")));
-			return storage;
-		} catch (Exception e) {
-			return null;
-		}
-
-	}
-
-	public static List<Storage> toList(String json) {
-		try {
-			JSONArray array = new JSONArray(json);
-			List<Storage> listElements = new ArrayList<Storage>();
-			for (int i = 0; array.optString(i).length() > 0; i++) {
-				String subElement = array.getString(i);
-				if (subElement != null) {
-					listElements.add(toObject(subElement));
-				}
-			}
-			return listElements;
-		} catch (Exception e) {
-			return null;
-		}
-	}
-
-	public static String toJson(Storage storage) {
-		try {
-			StringWriter writer = new StringWriter();
-			writer.write("{");
-			writer.write(JSONObject.quote("id") + ":"
-					+ JsonUtils.toJson(storage.getId()) + ",");
-			writer.write(JSONObject.quote("appId") + ":"
-					+ JsonUtils.toJson(storage.getAppId()) + ",");
-			writer.write(JSONObject.quote("name") + ":"
-					+ JsonUtils.toJson(storage.getName()) + ",");
-			writer.write(JSONObject.quote("redirect") + ":"
-					+ JsonUtils.toJson(storage.getRedirect()) + ",");
-			writer.write(JSONObject.quote("storageType") + ":"
-					+ JsonUtils.toJson(storage.getStorageType()) + ",");
-			writer.write(JSONObject.quote("configurations") + ":"
-					+ JsonUtils.toJson(storage.getConfigurations()));
-			writer.write("}");
-			return writer.toString();
-		} catch (NullPointerException e) {
-			return null;
-		}
 	}
 
 }

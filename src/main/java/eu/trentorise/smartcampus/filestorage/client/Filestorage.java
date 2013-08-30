@@ -32,6 +32,7 @@ import eu.trentorise.smartcampus.filestorage.client.network.MultipartParam;
 import eu.trentorise.smartcampus.filestorage.client.network.MultipartRemoteConnector;
 import eu.trentorise.smartcampus.filestorage.client.retriever.HttpResourceRetriever;
 import eu.trentorise.smartcampus.filestorage.client.retriever.ResourceRetriever;
+import eu.trentorise.smartcampus.network.JsonUtils;
 import eu.trentorise.smartcampus.network.RemoteConnector;
 import eu.trentorise.smartcampus.network.RemoteException;
 
@@ -192,7 +193,7 @@ public class Filestorage {
 			String response = MultipartRemoteConnector.postJSON(serverUrl,
 					RESOURCE + "create/" + operationType + appId
 							+ "/" + accountId, authToken, parameters, resource);
-			return Metadata.toObject(response);
+			return JsonUtils.toObject(response, Metadata.class);
 		} catch (Exception e) {
 			// logger.error("Exception storing resource", e);
 			throw new FilestorageException(e);
@@ -322,7 +323,7 @@ public class Filestorage {
 		try {
 			String response = MultipartRemoteConnector.getJSON(serverUrl,
 					ACCOUNT + operationType + appId, authToken);
-			return ListAccount.toObject(response).getAccounts();
+			return JsonUtils.toObject(response, ListAccount.class).getAccounts();
 		} catch (RemoteException e) {
 			// logger.error(String.format("Exception getting accounts"), e);
 			throw new FilestorageException(e);
@@ -349,7 +350,7 @@ public class Filestorage {
 			if (accountId != null) service += "/" + accountId;
 			String response = MultipartRemoteConnector
 					.getJSON(serverUrl,  service, authToken);
-			return Account.toObject(response);
+			return JsonUtils.toObject(response, Account.class);
 		} catch (RemoteException e) {
 			// logger.error(
 			// String.format("Exception getting account %s", accountId), e);
@@ -420,8 +421,8 @@ public class Filestorage {
 		try {
 			String response = MultipartRemoteConnector.postJSON(serverUrl,
 					ACCOUNT + operationType + appId,
-					Account.toJson(account), authToken);
-			return Account.toObject(response);
+					JsonUtils.toJSON(account), authToken);
+			return JsonUtils.toObject(response, Account.class);
 		} catch (RemoteException e) {
 			// logger.error(String.format(
 			// "Exception creating new account %s for app %s",
@@ -459,7 +460,7 @@ public class Filestorage {
 			if (accountId != null) service += "/" + accountId;
 
 			MultipartRemoteConnector.putJSON(serverUrl, service,
-					Account.toJson(account), authToken);
+					JsonUtils.toJSON(account), authToken);
 		} catch (RemoteException e) {
 			// logger.error(String.format(
 			// "Exception updating account %s for app %s",
@@ -497,7 +498,7 @@ public class Filestorage {
 			String response = MultipartRemoteConnector
 					.getJSON(serverUrl, STORAGE + operationType
 							+ appId, authToken);
-			return Storage.toObject(response);
+			return JsonUtils.toObject(response, Storage.class);
 		} catch (RemoteException e) {
 			throw new FilestorageException(e);
 		}
@@ -522,8 +523,8 @@ public class Filestorage {
 		try {
 			String response = MultipartRemoteConnector.postJSON(serverUrl,
 					STORAGE + operationType + appId,
-					Storage.toJson(storage), authToken);
-			return Storage.toObject(response);
+					JsonUtils.toJSON(storage), authToken);
+			return JsonUtils.toObject(response, Storage.class);
 		} catch (RemoteException e) {
 			// logger.error(String.format("Exception creating storage for app %s",
 			// appId), e);
@@ -572,9 +573,9 @@ public class Filestorage {
 		try {
 			String response = MultipartRemoteConnector.putJSON(
 					serverUrl,
-					STORAGE + operationType + appId, Storage.toJson(storage),
+					STORAGE + operationType + appId, JsonUtils.toJSON(storage),
 					authToken);
-			return Storage.toObject(response);
+			return JsonUtils.toObject(response, Storage.class);
 		} catch (RemoteException e) {
 			// logger.error(String.format(
 			// "Exception deleting storage %s of app %s", storage.getId(),
@@ -694,7 +695,7 @@ public class Filestorage {
 		try {
 			String response = RemoteConnector.putJSON(serverUrl, SOCIAL + appId + "/" + resourceId + "/" + entityId,
 					authToken);
-			return Metadata.toObject(response);
+			return JsonUtils.toObject(response, Metadata.class);
 		} catch (RemoteException e) {
 			// logger.error(String
 			// .format("Exception updating social data of resource %s",
@@ -746,7 +747,7 @@ public class Filestorage {
 			}
 			String response = MultipartRemoteConnector.getJSON(serverUrl,
 					METADATA + uri, authToken);
-			return Metadata.toObject(response);
+			return JsonUtils.toObject(response, Metadata.class);
 		} catch (RemoteException e) {
 			// logger.error(String.format(
 			// "Exception getting metadata of resource %s", resourceId));
@@ -817,7 +818,7 @@ public class Filestorage {
 			}
 			String response = MultipartRemoteConnector.getJSON(serverUrl,
 					METADATA + uri, authToken, parameters);
-			return Metadata.toList(response);
+			return JsonUtils.toObjectList(response, Metadata.class);
 		} catch (RemoteException e) {
 			// logger.error(String.format("Exception getting all metadata of %s",
 			// appId));
@@ -837,7 +838,7 @@ public class Filestorage {
 					+ "/"
 					+ (!owned && operationType.equals(APP_OPERATION) ? userId
 							+ "/" : "") + resourceId, authToken);
-			return Token.toObject(response);
+			return JsonUtils.toObject(response, Token.class);
 		} catch (RemoteException e) {
 			// logger.error(
 			// String.format("Exception getting resource %s", resourceId),

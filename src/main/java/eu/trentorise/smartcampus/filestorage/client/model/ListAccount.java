@@ -17,8 +17,6 @@ package eu.trentorise.smartcampus.filestorage.client.model;
 
 import java.util.List;
 
-import org.json.JSONObject;
-
 /**
  * Utility class to be complaint with internal protocol of list representation
  * 
@@ -34,17 +32,5 @@ public class ListAccount {
 
 	public void setAccounts(List<Account> accounts) {
 		this.accounts = accounts;
-	}
-
-	public static ListAccount toObject(String json) {
-		try {
-			JSONObject object = new JSONObject(json);
-			ListAccount listAccount = new ListAccount();
-			listAccount
-					.setAccounts(Account.toList(object.getString("accounts")));
-			return listAccount;
-		} catch (Exception e) {
-			return null;
-		}
 	}
 }

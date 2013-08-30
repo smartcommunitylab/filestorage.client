@@ -16,11 +16,6 @@
 
 package eu.trentorise.smartcampus.filestorage.client.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 /**
  * <i>Metadata</i> represents all the informations about a resource
@@ -156,42 +151,6 @@ public class Metadata {
 
 	public void setSize(long size) {
 		this.size = size;
-	}
-
-	public static Metadata toObject(String json) {
-		try {
-			JSONObject object = new JSONObject(json);
-			Metadata result = new Metadata();
-			result.setAccountId(object.getString("accountId"));
-			result.setAppId(object.getString("appId"));
-			result.setContentType(object.getString("contentType"));
-			result.setCreationTs(object.getLong("creationTs"));
-			result.setFileExternalId(object.getString("fileExternalId"));
-			result.setLastModifiedTs(object.getLong("lastModifiedTs"));
-			result.setName(object.getString("name"));
-			result.setResourceId(object.getString("resourceId"));
-			result.setSize(object.getLong("size"));
-			result.setSocialId(object.getString("socialId"));
-			return result;
-		} catch (Exception e) {
-			return null;
-		}
-	}
-
-	public static List<Metadata> toList(String json) {
-		try {
-			JSONArray array = new JSONArray(json);
-			List<Metadata> listElements = new ArrayList<Metadata>();
-			for (int i = 0; array.optString(i).length() > 0; i++) {
-				String subElement = array.getString(i);
-				if (subElement != null) {
-					listElements.add(toObject(subElement));
-				}
-			}
-			return listElements;
-		} catch (Exception e) {
-			return null;
-		}
 	}
 
 }

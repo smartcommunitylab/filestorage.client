@@ -16,15 +16,7 @@
 
 package eu.trentorise.smartcampus.filestorage.client.model;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * <i>Token</i> contains all the informations to download a resource. A resource
@@ -102,56 +94,5 @@ public class Token {
 
 	public void setStorageType(StorageType storageType) {
 		this.storageType = storageType;
-	}
-
-	@SuppressWarnings("unchecked")
-	public static Token toObject(String json) {
-		try {
-			JSONObject object = new JSONObject(json);
-			Token result = new Token();
-			result.setUrl(object.getString("url"));
-			result.setStorageType(StorageType.valueOf(object
-					.getString("storageType")));
-			result.setMethodREST(object.getString("methodREST"));
-			result.setMetadata(valueOf(object.getString("metadata")));
-			result.setHttpHeaders(valueOf(object.getString("httpHeaders")));
-
-			return result;
-		} catch (Exception e) {
-			return null;
-		}
-	}
-
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private static Map valueOf(String json) throws JSONException {
-		try {
-			Map object = new HashMap();
-			JSONObject jsonObj = new JSONObject(json);
-			Iterator<String> iter = jsonObj.keys();
-			while (iter.hasNext()) {
-				String key = iter.next();
-				object.put(key, jsonObj.get(key));
-			}
-			return object;
-		} catch (Exception e) {
-			return null;
-		}
-
-	}
-
-	public static List<Token> toList(String json) {
-		try {
-			JSONArray array = new JSONArray(json);
-			List<Token> listElements = new ArrayList<Token>();
-			for (int i = 0; array.optString(i).length() > 0; i++) {
-				String subElement = array.getString(i);
-				if (subElement != null) {
-					listElements.add(toObject(subElement));
-				}
-			}
-			return listElements;
-		} catch (Exception e) {
-			return null;
-		}
 	}
 }
