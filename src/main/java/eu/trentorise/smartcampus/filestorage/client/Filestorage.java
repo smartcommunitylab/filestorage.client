@@ -191,8 +191,8 @@ public class Filestorage {
 			parameters.put("createSocialData", createSocialData);
 
 			String response = MultipartRemoteConnector.postJSON(serverUrl,
-					RESOURCE + "create/" + operationType + appId
-							+ "/" + accountId, authToken, parameters, resource);
+					RESOURCE + "create/" + operationType + appId + "/"
+							+ accountId, authToken, parameters, resource);
 			return JsonUtils.toObject(response, Metadata.class);
 		} catch (Exception e) {
 			// logger.error("Exception storing resource", e);
@@ -263,7 +263,7 @@ public class Filestorage {
 	 * updates a resource
 	 * 
 	 * @param authToken
-	 *           client access token
+	 *            client access token
 	 * @param accountId
 	 *            id of the user storage account
 	 * @param resourceId
@@ -293,19 +293,22 @@ public class Filestorage {
 	}
 
 	/**
- 	 * retrieves the user storage account bound to the application name and to the access token
-	 * @param authToken user access token
+	 * retrieves the user storage account bound to the application name and to
+	 * the access token
+	 * 
+	 * @param authToken
+	 *            user access token
 	 * @return {@link Account} instance
 	 * @throws FilestorageException
-	 * @throws RemoteException 
-	 * @throws SecurityException 
+	 * @throws RemoteException
+	 * @throws SecurityException
 	 */
 	public Account getAccountByUser(String authToken)
 			throws FilestorageException, SecurityException {
 		return getAccount(authToken, null, USER_OPERATION);
 	}
 
-	/**
+/**
  	 * retrieves all the user storage accounts bound to the application name
 	 * @param authToken client access token
 	 * @return list of {@link Account)
@@ -323,14 +326,15 @@ public class Filestorage {
 		try {
 			String response = MultipartRemoteConnector.getJSON(serverUrl,
 					ACCOUNT + operationType + appId, authToken);
-			return JsonUtils.toObject(response, ListAccount.class).getAccounts();
+			return JsonUtils.toObject(response, ListAccount.class)
+					.getAccounts();
 		} catch (RemoteException e) {
 			// logger.error(String.format("Exception getting accounts"), e);
 			throw new FilestorageException(e);
 		}
 	}
 
-	/**
+/**
  	 * retrieves the specified user storage account 
 	 * @param authToken client access token
 	 * @return list of {@link Account)
@@ -347,9 +351,10 @@ public class Filestorage {
 			String operationType) throws FilestorageException {
 		try {
 			String service = ACCOUNT + operationType + appId;
-			if (accountId != null) service += "/" + accountId;
-			String response = MultipartRemoteConnector
-					.getJSON(serverUrl,  service, authToken);
+			if (accountId != null)
+				service += "/" + accountId;
+			String response = MultipartRemoteConnector.getJSON(serverUrl,
+					service, authToken);
 			return JsonUtils.toObject(response, Account.class);
 		} catch (RemoteException e) {
 			// logger.error(
@@ -360,8 +365,11 @@ public class Filestorage {
 
 	/**
 	 * Delete the specified user account
-	 * @param authToken client access token 
-	 * @param accountId account ID
+	 * 
+	 * @param authToken
+	 *            client access token
+	 * @param accountId
+	 *            account ID
 	 * @throws FilestorageException
 	 */
 	public void deleteAccountByApp(String authToken, String accountId)
@@ -371,7 +379,9 @@ public class Filestorage {
 
 	/**
 	 * Delete the specified user account
-	 * @param authToken user access token 
+	 * 
+	 * @param authToken
+	 *            user access token
 	 * @throws FilestorageException
 	 */
 	public void deleteAccountByUser(String authToken)
@@ -383,7 +393,8 @@ public class Filestorage {
 			String operationType) throws FilestorageException {
 		try {
 			String service = ACCOUNT + operationType + appId;
-			if (accountId != null) service += "/" + accountId;
+			if (accountId != null)
+				service += "/" + accountId;
 			MultipartRemoteConnector.deleteJSON(serverUrl, service, authToken);
 		} catch (RemoteException e) {
 			// logger.error(
@@ -394,8 +405,11 @@ public class Filestorage {
 
 	/**
 	 * Create a new user storage account
-	 * @param authToken client access token
-	 * @param account {@link Account} data. Field {@link Account#appId} is required 
+	 * 
+	 * @param authToken
+	 *            client access token
+	 * @param account
+	 *            {@link Account} data. Field {@link Account#appId} is required
 	 * @return
 	 * @throws FilestorageException
 	 */
@@ -406,8 +420,11 @@ public class Filestorage {
 
 	/**
 	 * Create a new user storage account
-	 * @param authToken user access token
-	 * @param account {@link Account} data. Field {@link Account#appId} is required 
+	 * 
+	 * @param authToken
+	 *            user access token
+	 * @param account
+	 *            {@link Account} data. Field {@link Account#appId} is required
 	 * @return
 	 * @throws FilestorageException
 	 */
@@ -420,8 +437,8 @@ public class Filestorage {
 			String operationType) throws FilestorageException {
 		try {
 			String response = MultipartRemoteConnector.postJSON(serverUrl,
-					ACCOUNT + operationType + appId,
-					JsonUtils.toJSON(account), authToken);
+					ACCOUNT + operationType + appId, JsonUtils.toJSON(account),
+					authToken);
 			return JsonUtils.toObject(response, Account.class);
 		} catch (RemoteException e) {
 			// logger.error(String.format(
@@ -433,8 +450,12 @@ public class Filestorage {
 
 	/**
 	 * Update user storage account
-	 * @param authToken client access token
-	 * @param account {@link Account} to update. {@link Account#getId()} should not be null 
+	 * 
+	 * @param authToken
+	 *            client access token
+	 * @param account
+	 *            {@link Account} to update. {@link Account#getId()} should not
+	 *            be null
 	 * @throws FilestorageException
 	 */
 	public void updateAccountByApp(String authToken, Account account)
@@ -444,8 +465,11 @@ public class Filestorage {
 
 	/**
 	 * Update user storage account
-	 * @param authToken user access token
-	 * @param account {@link Account} to update 
+	 * 
+	 * @param authToken
+	 *            user access token
+	 * @param account
+	 *            {@link Account} to update
 	 * @throws FilestorageException
 	 */
 	public void updateAccountByUser(String authToken, Account account)
@@ -453,11 +477,12 @@ public class Filestorage {
 		updateAccount(authToken, account, null, USER_OPERATION);
 	}
 
-	private void updateAccount(String authToken, Account account, String accountId,
-			String operationType) throws FilestorageException {
+	private void updateAccount(String authToken, Account account,
+			String accountId, String operationType) throws FilestorageException {
 		try {
 			String service = ACCOUNT + operationType + appId;
-			if (accountId != null) service += "/" + accountId;
+			if (accountId != null)
+				service += "/" + accountId;
 
 			MultipartRemoteConnector.putJSON(serverUrl, service,
 					JsonUtils.toJSON(account), authToken);
@@ -471,7 +496,9 @@ public class Filestorage {
 
 	/**
 	 * Get storage registration information
-	 * @param authToken client access token
+	 * 
+	 * @param authToken
+	 *            client access token
 	 * @return {@link Storage} instance
 	 * @throws FilestorageException
 	 */
@@ -479,25 +506,27 @@ public class Filestorage {
 		return getStorage(authToken, appId, APP_OPERATION);
 	}
 
-//	public Storage getStorageByApp(String authToken, String appId) throws FilestorageException {
-//		return getStorage(authToken, appId, APP_OPERATION);
-//	}
+	// public Storage getStorageByApp(String authToken, String appId) throws
+	// FilestorageException {
+	// return getStorage(authToken, appId, APP_OPERATION);
+	// }
 
-//	public Storage getStorageByUser(String authToken) throws FilestorageException {
-//		return getStorage(authToken, appId, USER_OPERATION);
-//	}
-	
-//	public Storage getStorageByUserAndApp(String authToken, String appId) throws FilestorageException {
-//		return getStorage(authToken, appId, USER_OPERATION);
-//	}
+	// public Storage getStorageByUser(String authToken) throws
+	// FilestorageException {
+	// return getStorage(authToken, appId, USER_OPERATION);
+	// }
+
+	// public Storage getStorageByUserAndApp(String authToken, String appId)
+	// throws FilestorageException {
+	// return getStorage(authToken, appId, USER_OPERATION);
+	// }
 
 	private Storage getStorage(String authToken, String appId,
 			String operationType) throws SecurityException,
 			FilestorageException {
 		try {
-			String response = MultipartRemoteConnector
-					.getJSON(serverUrl, STORAGE + operationType
-							+ appId, authToken);
+			String response = MultipartRemoteConnector.getJSON(serverUrl,
+					STORAGE + operationType + appId, authToken);
 			return JsonUtils.toObject(response, Storage.class);
 		} catch (RemoteException e) {
 			throw new FilestorageException(e);
@@ -506,8 +535,11 @@ public class Filestorage {
 
 	/**
 	 * Create and register a new storage.
-	 * @param authToken client access token
-	 * @param storage {@link Storage} to store
+	 * 
+	 * @param authToken
+	 *            client access token
+	 * @param storage
+	 *            {@link Storage} to store
 	 * @return registered {@link Storage} instance
 	 * @throws SecurityException
 	 * @throws FilestorageException
@@ -522,8 +554,8 @@ public class Filestorage {
 			FilestorageException {
 		try {
 			String response = MultipartRemoteConnector.postJSON(serverUrl,
-					STORAGE + operationType + appId,
-					JsonUtils.toJSON(storage), authToken);
+					STORAGE + operationType + appId, JsonUtils.toJSON(storage),
+					authToken);
 			return JsonUtils.toObject(response, Storage.class);
 		} catch (RemoteException e) {
 			// logger.error(String.format("Exception creating storage for app %s",
@@ -534,22 +566,22 @@ public class Filestorage {
 
 	/**
 	 * Delete storage registration
-	 * @param authToken client access token
+	 * 
+	 * @param authToken
+	 *            client access token
 	 * @return true if the operation was successful
 	 * @throws FilestorageException
 	 */
-	public boolean deleteStorage(String authToken)
-			throws FilestorageException {
+	public boolean deleteStorage(String authToken) throws FilestorageException {
 		return deleteStorage(authToken, APP_OPERATION);
 	}
 
-	private boolean deleteStorage(String authToken,
-			String operationType) throws FilestorageException {
+	private boolean deleteStorage(String authToken, String operationType)
+			throws FilestorageException {
 
 		try {
-			String response = MultipartRemoteConnector
-					.deleteJSON(serverUrl, STORAGE + operationType
-							+ appId, authToken);
+			String response = MultipartRemoteConnector.deleteJSON(serverUrl,
+					STORAGE + operationType + appId, authToken);
 			return Boolean.valueOf(response);
 		} catch (RemoteException e) {
 			throw new FilestorageException(e);
@@ -558,8 +590,11 @@ public class Filestorage {
 
 	/**
 	 * Update storage registration information
-	 * @param authToken client access token
-	 * @param storage {@link Storage} instance to update
+	 * 
+	 * @param authToken
+	 *            client access token
+	 * @param storage
+	 *            {@link Storage} instance to update
 	 * @return
 	 * @throws FilestorageException
 	 */
@@ -571,8 +606,7 @@ public class Filestorage {
 	private Storage updateStorage(String authToken, Storage storage,
 			String operationType) throws FilestorageException {
 		try {
-			String response = MultipartRemoteConnector.putJSON(
-					serverUrl,
+			String response = MultipartRemoteConnector.putJSON(serverUrl,
 					STORAGE + operationType + appId, JsonUtils.toJSON(storage),
 					authToken);
 			return JsonUtils.toObject(response, Storage.class);
@@ -632,9 +666,13 @@ public class Filestorage {
 
 	/**
 	 * retrieves the resource shared with the user
-	 * @param authToken client access token
-	 * @param resourceId resource ID
-	 * @param userId user ID
+	 * 
+	 * @param authToken
+	 *            client access token
+	 * @param resourceId
+	 *            resource ID
+	 * @param userId
+	 *            user ID
 	 * @return {@link Resource} data
 	 * @throws FilestorageException
 	 */
@@ -645,9 +683,13 @@ public class Filestorage {
 
 	/**
 	 * retrieves the resource shared with the user
-	 * @param authToken user access token
-	 * @param resourceId resource ID
-	 * @param userId user ID
+	 * 
+	 * @param authToken
+	 *            user access token
+	 * @param resourceId
+	 *            resource ID
+	 * @param userId
+	 *            user ID
 	 * @return {@link Resource} data
 	 * @throws FilestorageException
 	 */
@@ -690,11 +732,30 @@ public class Filestorage {
 		return updateSocialData(authToken, resourceId, entityId, APP_OPERATION);
 	}
 
+	/**
+	 * update social entity associated to the resource. Social entity MUST be
+	 * owned be the user.
+	 * 
+	 * @param authToken
+	 *            user access token
+	 * @param resourceId
+	 *            id of the resource
+	 * @param entityId
+	 *            social entity id
+	 * @return updated information about resource
+	 * @throws FilestorageException
+	 */
+	public Metadata updateSocialDataByUser(String authToken, String resourceId,
+			String entityId) throws FilestorageException {
+		return updateSocialData(authToken, resourceId, entityId, USER_OPERATION);
+	}
+
 	private Metadata updateSocialData(String authToken, String resourceId,
 			String entityId, String operationType) throws FilestorageException {
 		try {
-			String response = RemoteConnector.putJSON(serverUrl, SOCIAL + appId + "/" + resourceId + "/" + entityId,
-					authToken);
+			String response = RemoteConnector.putJSON(serverUrl,
+					SOCIAL + operationType + appId + "/" + resourceId + "/"
+							+ entityId, authToken);
 			return JsonUtils.toObject(response, Metadata.class);
 		} catch (RemoteException e) {
 			// logger.error(String
@@ -831,13 +892,18 @@ public class Filestorage {
 			throws FilestorageException {
 		try {
 			String functionality = owned ? MY_RESOURCE : SHARED_RESOURCE;
-			String response = RemoteConnector.getJSON(serverUrl, 
-					  functionality
-					+ operationType
-					+ appId
-					+ "/"
-					+ (!owned && operationType.equals(APP_OPERATION) ? userId
-							+ "/" : "") + resourceId, authToken);
+			String response = RemoteConnector
+					.getJSON(
+							serverUrl,
+							functionality
+									+ operationType
+									+ appId
+									+ "/"
+									+ (!owned
+											&& operationType
+													.equals(APP_OPERATION) ? userId
+											+ "/"
+											: "") + resourceId, authToken);
 			return JsonUtils.toObject(response, Token.class);
 		} catch (RemoteException e) {
 			// logger.error(
@@ -863,18 +929,21 @@ public class Filestorage {
 	}
 
 	/**
-	 * retrieves the authorization URL to use for the storage authorization procedure
+	 * retrieves the authorization URL to use for the storage authorization
+	 * procedure
+	 * 
 	 * @param token
 	 * @return
 	 * @throws FilestorageException
 	 */
 	public String getAuthorizationURL(String token) throws FilestorageException {
 		try {
-			String response = RemoteConnector.getJSON(serverUrl, REQUEST_AUTH+appId, token);
+			String response = RemoteConnector.getJSON(serverUrl, REQUEST_AUTH
+					+ appId, token);
 			return response;
 		} catch (RemoteException e) {
 			throw new FilestorageException(e);
 		}
 	}
-	
+
 }
