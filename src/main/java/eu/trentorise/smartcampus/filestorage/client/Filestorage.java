@@ -817,6 +817,47 @@ public class Filestorage {
 	}
 
 	/**
+	 * creates resource metadata
+	 * 
+	 * @param authToken
+	 * @param resource
+	 * @param accountId
+	 * @param createSocialData
+	 * @return metadata created
+	 * @throws FilestorageException
+	 */
+	public Metadata createMetadataByUser(String authToken, Resource resource,
+			String accountId, boolean createSocialData)
+			throws FilestorageException {
+		return createMetadata(authToken, resource, accountId, createSocialData,
+				USER_OPERATION);
+	}
+
+	private Metadata createMetadata(String authToken, Resource resource,
+			String accountId, boolean createSocialData, String operationType)
+			throws FilestorageException {
+		try {
+			String uri = null;
+			if (operationType.equals(APP_OPERATION)) {
+				uri = operationType + appId + "/" + accountId;
+			}
+			if (operationType.equals(USER_OPERATION)) {
+				uri = operationType + appId + "/" + accountId;
+			}
+			Map<String, Object> params = new HashMap<String, Object>();
+			params.put("createSocialData", createSocialData);
+			String response = MultipartRemoteConnector.postJSON(serverUrl,
+					METADATA + uri, JsonUtils.toJSON(resource), authToken,
+					params);
+			return JsonUtils.toObject(response, Metadata.class);
+		} catch (RemoteException e) {
+			// logger.error(String.format(
+			// "Exception getting metadata of resource %s", resourceId));
+			throw new FilestorageException(e);
+		}
+	}
+
+	/**
 	 * retrieves all the resource metadata for the application
 	 * 
 	 * @param authToken
