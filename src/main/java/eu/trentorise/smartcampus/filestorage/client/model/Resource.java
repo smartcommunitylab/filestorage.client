@@ -16,7 +16,6 @@
 
 package eu.trentorise.smartcampus.filestorage.client.model;
 
-
 /**
  * <i>Resource</i> represents any type of file stored in the storage
  * 
@@ -40,6 +39,11 @@ public class Resource {
 	 * content type of the resource
 	 */
 	private String contentType;
+
+	/**
+	 * file size
+	 */
+	private long size;
 
 	public String getName() {
 		return name;
@@ -71,6 +75,14 @@ public class Resource {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public long getSize() {
+		return size;
+	}
+
+	public void setSize(long size) {
+		this.size = size;
 	}
 
 }
