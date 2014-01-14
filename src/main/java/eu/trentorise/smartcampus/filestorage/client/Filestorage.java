@@ -928,6 +928,30 @@ public class Filestorage {
 		}
 	}
 
+	public Token getSharedResourceTokenByUser(String authToken,
+			String resourceId) throws FilestorageException {
+		return getResourceToken(authToken, resourceId, null, false,
+				USER_OPERATION);
+	}
+
+	public Token getSharedResourceTokenByApp(String authToken,
+			String resourceId, String userId) throws FilestorageException {
+		return getResourceToken(authToken, resourceId, userId, false,
+				APP_OPERATION);
+	}
+
+	public Token getResourceTokenByApp(String authToken, String resourceId)
+			throws FilestorageException {
+		return getResourceToken(authToken, resourceId, null, true,
+				APP_OPERATION);
+	}
+
+	public Token getResourceTokenByUser(String authToken, String resourceId)
+			throws FilestorageException {
+		return getResourceToken(authToken, resourceId, null, true,
+				USER_OPERATION);
+	}
+
 	private Token getResourceToken(String authToken, String resourceId,
 			String userId, boolean owned, String operationType)
 			throws FilestorageException {
