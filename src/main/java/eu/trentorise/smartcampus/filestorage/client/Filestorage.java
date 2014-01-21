@@ -16,6 +16,8 @@
 package eu.trentorise.smartcampus.filestorage.client;
 
 import java.io.File;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,6 +56,7 @@ public class Filestorage {
 	protected static final String SHARED_RESOURCE = "sharedresource/";
 	protected static final String MY_RESOURCE = "resource/";
 	protected static final String METADATA = "metadata/";
+	protected static final String THUMBNAIL = "thumbnail/";
 	protected static final String SOCIAL = "updatesocial/";
 	protected static final String REQUEST_AUTH = "requestAuth/";
 
@@ -971,6 +974,33 @@ public class Filestorage {
 											: "") + resourceId, authToken);
 			return JsonUtils.toObject(response, Token.class);
 		} catch (RemoteException e) {
+			// logger.error(
+			// String.format("Exception getting resource %s", resourceId),
+			// e);
+			throw new FilestorageException(e);
+		}
+	}
+
+	public void getThumbnailByUser(String authToken, String resourceId,
+			OutputStream output) throws FilestorageException {
+		getThumbnail(authToken, resourceId, output, USER_OPERATION);
+	}
+
+	private void getThumbnail(String authToken, String resourceId,
+			OutputStream output, String operationType)
+			throws FilestorageException {
+		try {
+			InputStream in = MultipartRemoteConnector.getBinaryStream(
+					serverUrl, THUMBNAIL + operationType + appId + "/"
+							+ resourceId, authToken);
+			if (in != null) {
+				byte[] buffer = new byte[1024];
+				int readed = 0;
+				while ((readed = in.read(buffer)) > 0) {
+					output.write(buffer, 0, readed);
+				}
+			}
+		} catch (Exception e) {
 			// logger.error(
 			// String.format("Exception getting resource %s", resourceId),
 			// e);

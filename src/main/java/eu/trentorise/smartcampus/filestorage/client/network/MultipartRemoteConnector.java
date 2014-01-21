@@ -1,6 +1,7 @@
 package eu.trentorise.smartcampus.filestorage.client.network;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
@@ -10,6 +11,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.MultipartEntity;
@@ -21,6 +23,38 @@ import eu.trentorise.smartcampus.network.RemoteConnector;
 import eu.trentorise.smartcampus.network.RemoteException;
 
 public class MultipartRemoteConnector extends RemoteConnector {
+
+	public static InputStream getBinaryStream(String host, String service,
+			String token) throws RemoteException {
+		return getBinaryStream(host, service, token, null);
+	}
+
+	public static InputStream getBinaryStream(String host, String service,
+			String token, Map<String, Object> parameters)
+			throws RemoteException {
+		String queryString = generateQueryString(parameters);
+		final HttpResponse resp;
+		final HttpGet get = new HttpGet(host + service + queryString);
+
+		get.setHeader(RH_ACCEPT, "application/json");
+		get.setHeader(RH_AUTH_TOKEN, bearer(token));
+
+		try {
+			resp = getHttpClient().execute(get);
+			if (resp.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+				return resp.getEntity().getContent();
+			}
+			if (resp.getStatusLine().getStatusCode() == HttpStatus.SC_FORBIDDEN
+					|| resp.getStatusLine().getStatusCode() == HttpStatus.SC_UNAUTHORIZED) {
+				throw new SecurityException();
+			}
+		} catch (ClientProtocolException e) {
+			throw new RemoteException(e.getMessage(), e);
+		} catch (IOException e) {
+			throw new RemoteException(e.getMessage(), e);
+		}
+		return null;
+	}
 
 	public static String postJSON(String host, String service, String body,
 			String token) throws SecurityException, RemoteException {
