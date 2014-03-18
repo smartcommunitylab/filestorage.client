@@ -1014,7 +1014,9 @@ public class Filestorage {
 		case DROPBOX:
 			retriever = new HttpResourceRetriever(serverUrl, appId);
 			break;
-
+		case LOCAL:
+			retriever = new HttpResourceRetriever(serverUrl, appId);
+			break;
 		default:
 			throw new IllegalArgumentException(
 					"StorageType requested doesn't exist");

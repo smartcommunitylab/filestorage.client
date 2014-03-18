@@ -16,7 +16,6 @@
 
 package eu.trentorise.smartcampus.filestorage.client.model;
 
-
 /**
  * Types of storage
  * 
@@ -24,5 +23,5 @@ package eu.trentorise.smartcampus.filestorage.client.model;
  * 
  */
 public enum StorageType {
-	DROPBOX
+	DROPBOX, LOCAL
 }
