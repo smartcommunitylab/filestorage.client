@@ -18,17 +18,25 @@ package eu.trentorise.smartcampus.filestorage.client.utils;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 public class Utils {
 
 	public static byte[] read(InputStream is) throws IOException {
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		byte[] buffer = new byte[512];
+		read(is, bos);
+		byte[] bFile = bos.toByteArray();
+		bos.close();
+		return bFile;
+	}
 
+	public static void read(InputStream is, OutputStream outputStream)
+			throws IOException {
+
+		byte[] buffer = new byte[2048 * 10000];
 		int byteReaded = 0;
 		while ((byteReaded = is.read(buffer, 0, buffer.length)) != -1) {
-			bos.write(buffer, 0, byteReaded);
+			outputStream.write(buffer, 0, byteReaded);
 		}
-		return bos.toByteArray();
 	}
 }

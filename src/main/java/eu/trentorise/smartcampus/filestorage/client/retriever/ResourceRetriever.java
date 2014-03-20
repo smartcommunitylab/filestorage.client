@@ -15,8 +15,10 @@
  ******************************************************************************/
 package eu.trentorise.smartcampus.filestorage.client.retriever;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -52,11 +54,18 @@ public abstract class ResourceRetriever {
 	}
 
 	public Resource getResource(String authToken, String resourceId,
-			Token resourceToken, String operationType)
+			Token resourceToken, String operationType, OutputStream outputStream)
 			throws ClientProtocolException, IOException, FilestorageException {
-
 		Resource resource = new Resource();
-		resource.setContent(getFileContent(resourceToken));
+
+		if (outputStream == null) {
+			ByteArrayOutputStream bos = new ByteArrayOutputStream();
+			getFileContent(resourceToken, bos);
+			resource.setContent(bos.toByteArray());
+			bos.close();
+		} else {
+			getFileContent(resourceToken, outputStream);
+		}
 
 		Metadata metadata = null;
 		if (operationType.equals(Filestorage.USER_OPERATION)) {
@@ -70,11 +79,12 @@ public abstract class ResourceRetriever {
 		resource.setId(metadata.getResourceId());
 		resource.setContentType(metadata.getContentType());
 		resource.setName(metadata.getName());
+		resource.setSize(metadata.getSize());
 		return resource;
 	}
 
-	private byte[] getFileContent(Token token) throws ClientProtocolException,
-			IOException {
+	private void getFileContent(Token token, OutputStream outputStream)
+			throws ClientProtocolException, IOException {
 		HttpUriRequest request = null;
 		if (token.getUrl() != null && token.getMethodREST() != null) {
 			if (token.getMethodREST().equals("GET")) {
@@ -95,15 +105,17 @@ public abstract class ResourceRetriever {
 			}
 			DefaultHttpClient httpclient = new DefaultHttpClient();
 			HttpResponse response = httpclient.execute(request);
+
 			if (response.getStatusLine().getStatusCode() == 200) {
 				InputStream is = response.getEntity().getContent();
-				return Utils.read(is);
+				Utils.read(is, outputStream);
 			}
+
 		} else if (token.getMetadata() != null) {
-			return retrieveContent(token.getMetadata());
+			retrieveContent(token.getMetadata(), outputStream);
 		}
-		return null;
 	}
 
-	protected abstract byte[] retrieveContent(Map<String, Object> tokenMetadata);
+	protected abstract void retrieveContent(Map<String, Object> tokenMetadata,
+			OutputStream outputStream);
 }

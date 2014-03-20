@@ -633,7 +633,12 @@ public class Filestorage {
 	 */
 	public Resource getResourceByApp(String authToken, String resourceId)
 			throws FilestorageException {
-		return getMyResource(authToken, resourceId, APP_OPERATION);
+		return getMyResource(authToken, resourceId, APP_OPERATION, null);
+	}
+
+	public Resource getResourceByApp(String authToken, String resourceId,
+			OutputStream outputStream) throws FilestorageException {
+		return getMyResource(authToken, resourceId, APP_OPERATION, outputStream);
 	}
 
 	/**
@@ -648,17 +653,35 @@ public class Filestorage {
 	 */
 	public Resource getResourceByUser(String authToken, String resourceId)
 			throws FilestorageException {
-		return getMyResource(authToken, resourceId, USER_OPERATION);
+		return getMyResource(authToken, resourceId, USER_OPERATION, null);
+	}
+
+	/**
+	 * 
+	 * @param authToken
+	 *            user acces token
+	 * @param resourceId
+	 *            id of the resource
+	 * @param outputStream
+	 *            outputstream of the data
+	 * @return
+	 * @throws FilestorageException
+	 */
+	public Resource getResourceByUser(String authToken, String resourceId,
+			OutputStream outputStream) throws FilestorageException {
+		return getMyResource(authToken, resourceId, USER_OPERATION,
+				outputStream);
 	}
 
 	private Resource getMyResource(String authToken, String resourceId,
-			String operationType) throws FilestorageException {
+			String operationType, OutputStream outputStream)
+			throws FilestorageException {
 		try {
 			Token token = getResourceToken(authToken, resourceId, null, true,
 					operationType);
 			ResourceRetriever retriever = resourceRetrieverFactory(token);
 			return retriever.getResource(authToken, resourceId, token,
-					operationType);
+					operationType, outputStream);
 		} catch (Exception e) {
 			// logger.error(
 			// String.format("Exception getting resource %s", resourceId),
@@ -681,7 +704,28 @@ public class Filestorage {
 	 */
 	public Resource getSharedResourceByApp(String authToken, String resourceId,
 			String userId) throws FilestorageException {
-		return getSharedResource(authToken, resourceId, userId, APP_OPERATION);
+		return getSharedResource(authToken, resourceId, userId, APP_OPERATION,
+				null);
+	}
+
+	/**
+	 * 
+	 * @param authToken
+	 *            client access token
+	 * @param resourceId
+	 *            resource ID
+	 * @param userId
+	 *            user ID
+	 * @param outputStream
+	 *            outputstream of the data
+	 * @return
+	 * @throws FilestorageException
+	 */
+	public Resource getSharedResourceByApp(String authToken, String resourceId,
+			String userId, OutputStream outputStream)
+			throws FilestorageException {
+		return getSharedResource(authToken, resourceId, userId, APP_OPERATION,
+				outputStream);
 	}
 
 	/**
@@ -691,24 +735,43 @@ public class Filestorage {
 	 *            user access token
 	 * @param resourceId
 	 *            resource ID
-	 * @param userId
-	 *            user ID
 	 * @return {@link Resource} data
 	 * @throws FilestorageException
 	 */
 	public Resource getSharedResourceByUser(String authToken, String resourceId)
 			throws FilestorageException {
-		return getSharedResource(authToken, resourceId, null, USER_OPERATION);
+		return getSharedResource(authToken, resourceId, null, USER_OPERATION,
+				null);
+	}
+
+	/**
+	 * 
+	 * @param authToken
+	 *            user access token
+	 * @param resourceId
+	 *            resource ID
+	 * 
+	 * @param outputStream
+	 *            outputstream of the data
+	 * @return
+	 * @throws FilestorageException
+	 */
+	public Resource getSharedResourceByUser(String authToken,
+			String resourceId, OutputStream outputStream)
+			throws FilestorageException {
+		return getSharedResource(authToken, resourceId, null, USER_OPERATION,
+				outputStream);
 	}
 
 	private Resource getSharedResource(String authToken, String resourceId,
-			String userId, String operationType) throws FilestorageException {
+			String userId, String operationType, OutputStream outputStream)
+			throws FilestorageException {
 		try {
 			Token token = getResourceToken(authToken, resourceId, userId,
 					false, operationType);
 			ResourceRetriever retriever = resourceRetrieverFactory(token);
 			return retriever.getResource(authToken, resourceId, token,
-					operationType);
+					operationType, outputStream);
 		} catch (Exception e) {
 			// logger.error(
 			// String.format("Exception getting resource %s", resourceId),
