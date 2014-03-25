@@ -1,5 +1,6 @@
 package eu.trentorise.smartcampus.filestorage.client.network;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -13,6 +14,7 @@ import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.FileEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ByteArrayBody;
@@ -72,6 +74,13 @@ public class MultipartRemoteConnector extends RemoteConnector {
 		return postJSON(host, service, null, token, parameters, param);
 	}
 
+	public static String postJSON(String host, String service, String token,
+			Map<String, Object> parameters, InputStream inputStream,
+			File resource) throws RemoteException {
+		return postJSON(host, service, null, token, parameters, inputStream,
+				resource);
+	}
+
 	public static String postJSON(String host, String service, String body,
 			String token, Map<String, Object> parameters)
 			throws SecurityException, RemoteException {
@@ -94,6 +103,50 @@ public class MultipartRemoteConnector extends RemoteConnector {
 
 			attachHttpEntity(post, body, param);
 
+			resp = getHttpClient().execute(post);
+			String response = EntityUtils.toString(resp.getEntity());
+			if (resp.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+				return response;
+			}
+			if (resp.getStatusLine().getStatusCode() == HttpStatus.SC_FORBIDDEN
+					|| resp.getStatusLine().getStatusCode() == HttpStatus.SC_UNAUTHORIZED) {
+				throw new SecurityException();
+			}
+
+			String msg = "";
+			try {
+				msg = response.substring(response.indexOf("<h1>") + 4,
+						response.indexOf("</h1>", response.indexOf("<h1>")));
+			} catch (Exception e) {
+				msg = resp.getStatusLine().toString();
+			}
+			throw new RemoteException(msg);
+		} catch (ClientProtocolException e) {
+			throw new RemoteException(e.getMessage(), e);
+		} catch (ParseException e) {
+			throw new RemoteException(e.getMessage(), e);
+		} catch (IOException e) {
+			throw new RemoteException(e.getMessage(), e);
+		}
+	}
+
+	private static String postJSON(String host, String service, String body,
+			String token, Map<String, Object> parameters,
+			InputStream inputStream, File resource) throws RemoteException {
+		String queryString = generateQueryString(parameters);
+		final HttpResponse resp;
+		final HttpPost post = new HttpPost(host + service + queryString);
+
+		post.setHeader(RH_ACCEPT, "application/json");
+		post.setHeader(RH_AUTH_TOKEN, bearer(token));
+		FileEntity reqEntity = null;
+		try {
+			// Update to httpcore > 4.2
+			reqEntity = new FileEntity(resource, "binary/octet-stream");
+
+			post.setEntity(reqEntity);
+			post.setHeader("filename", resource.getName());
+			reqEntity.setContentType("binary/octet-stream");
 			resp = getHttpClient().execute(post);
 			String response = EntityUtils.toString(resp.getEntity());
 			if (resp.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {

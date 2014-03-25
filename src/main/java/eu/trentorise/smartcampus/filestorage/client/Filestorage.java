@@ -105,6 +105,30 @@ public class Filestorage {
 	 * 
 	 * @param resource
 	 *            the resource to store
+	 * @param inputStream
+	 *            inputstream of the file
+	 * @param authToken
+	 *            client access token
+	 * @param accountId
+	 *            id of the user storage account in which store the resource
+	 * @param createSocialData
+	 *            true to create social entity associated to the resource
+	 * @return information about resources
+	 * @throws FilestorageException
+	 */
+	public Metadata storeResourceByUser(File resource, InputStream inputStream,
+			String authToken, String accountId, boolean createSocialData)
+			throws FilestorageException {
+
+		return storeResource(resource, inputStream, authToken, accountId,
+				createSocialData, USER_OPERATION);
+	}
+
+	/**
+	 * stores a resource in given user storage account
+	 * 
+	 * @param resource
+	 *            the resource to store
 	 * @param authToken
 	 *            client access token
 	 * @param accountId
@@ -119,6 +143,31 @@ public class Filestorage {
 			throws FilestorageException {
 		return storeResource(resource, authToken, accountId, createSocialData,
 				APP_OPERATION);
+	}
+
+	/**
+	 * 
+	 * stores a resource in given user storage account
+	 * 
+	 * @param resource
+	 *            the resource to store
+	 * @param inputStream
+	 *            inputstream of the file
+	 * @param authToken
+	 *            client access token
+	 * @param accountId
+	 *            id of the user storage account in which store the resource
+	 * @param createSocialData
+	 *            true to create social entity associated to the resource
+	 * @return
+	 * @throws FilestorageException
+	 */
+
+	public Metadata storeResourceByApp(File resource, InputStream inputStream,
+			String authToken, String accountId, boolean createSocialData)
+			throws FilestorageException {
+		return storeResource(resource, inputStream, authToken, accountId,
+				createSocialData, APP_OPERATION);
 	}
 
 	/**
@@ -173,6 +222,25 @@ public class Filestorage {
 		FileParam multipartParam = new FileParam(RESOURCE_PARAM_NAME, resource);
 		return storeResource(multipartParam, authToken, accountId,
 				createSocialData, operationType);
+	}
+
+	private Metadata storeResource(File resource, InputStream inputStream,
+			String authToken, String accountId, boolean createSocialData,
+			String operationType) throws FilestorageException {
+		try {
+
+			Map<String, Object> parameters = new HashMap<String, Object>();
+			parameters.put("createSocialData", createSocialData);
+			String response = MultipartRemoteConnector.postJSON(serverUrl,
+					"localstorage/" + RESOURCE + "create/" + operationType
+							+ appId + "/" + accountId, authToken, parameters,
+					inputStream, resource);
+			return JsonUtils.toObject(response, Metadata.class);
+		} catch (Exception e) {
+			// logger.error("Exception storing resource", e);
+			throw new FilestorageException(e);
+		}
+
 	}
 
 	private Metadata storeResource(byte[] resourceContent, String resourceName,
