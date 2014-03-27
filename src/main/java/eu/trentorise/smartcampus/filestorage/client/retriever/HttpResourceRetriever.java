@@ -15,6 +15,7 @@
  ******************************************************************************/
 package eu.trentorise.smartcampus.filestorage.client.retriever;
 
+import java.io.OutputStream;
 import java.util.Map;
 
 import eu.trentorise.smartcampus.filestorage.client.model.Token;
@@ -32,9 +33,13 @@ public class HttpResourceRetriever extends ResourceRetriever {
 		super(baseUrl, appName);
 	}
 
-	@Override
 	protected byte[] retrieveContent(Map<String, Object> tokenMetadata) {
 		return null;
+	}
+
+	@Override
+	protected void retrieveContent(Map<String, Object> tokenMetadata,
+			OutputStream outputStream) {
 	}
 
 }

@@ -133,7 +133,10 @@ public class MultipartRemoteConnector extends RemoteConnector {
 	private static String postJSON(String host, String service, String body,
 			String token, Map<String, Object> parameters,
 			InputStream inputStream, File resource) throws RemoteException {
-		String queryString = generateQueryString(parameters);
+		String queryString = "";
+		if (parameters != null) {
+			queryString = generateQueryString(parameters);
+		}
 		final HttpResponse resp;
 		final HttpPost post = new HttpPost(host + service + queryString);
 
@@ -143,10 +146,8 @@ public class MultipartRemoteConnector extends RemoteConnector {
 		try {
 			// Update to httpcore > 4.2
 			reqEntity = new FileEntity(resource, "binary/octet-stream");
-
 			post.setEntity(reqEntity);
 			post.setHeader("filename", resource.getName());
-			reqEntity.setContentType("binary/octet-stream");
 			resp = getHttpClient().execute(post);
 			String response = EntityUtils.toString(resp.getEntity());
 			if (resp.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {

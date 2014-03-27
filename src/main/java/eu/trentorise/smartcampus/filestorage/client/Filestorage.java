@@ -92,6 +92,7 @@ public class Filestorage {
 	 * @return information about resources
 	 * @throws FilestorageException
 	 */
+	@Deprecated
 	public Metadata storeResourceByUser(File resource, String authToken,
 			String accountId, boolean createSocialData)
 			throws FilestorageException {
@@ -138,6 +139,7 @@ public class Filestorage {
 	 * @return information about resources
 	 * @throws FilestorageException
 	 */
+	@Deprecated
 	public Metadata storeResourceByApp(File resource, String authToken,
 			String accountId, boolean createSocialData)
 			throws FilestorageException {
@@ -162,7 +164,6 @@ public class Filestorage {
 	 * @return
 	 * @throws FilestorageException
 	 */
-
 	public Metadata storeResourceByApp(File resource, InputStream inputStream,
 			String authToken, String accountId, boolean createSocialData)
 			throws FilestorageException {
@@ -184,6 +185,7 @@ public class Filestorage {
 	 * @return information about resources
 	 * @throws FilestorageException
 	 */
+	@Deprecated
 	public Metadata storeResourceByApp(byte[] resourceContent,
 			String resourceName, String resourceContentType, String authToken,
 			String accountId, boolean createSocialData)
@@ -232,9 +234,9 @@ public class Filestorage {
 			Map<String, Object> parameters = new HashMap<String, Object>();
 			parameters.put("createSocialData", createSocialData);
 			String response = MultipartRemoteConnector.postJSON(serverUrl,
-					"localstorage/" + RESOURCE + "create/" + operationType
-							+ appId + "/" + accountId, authToken, parameters,
-					inputStream, resource);
+					RESOURCE + "create/stream/" + operationType + appId + "/"
+							+ accountId, authToken, parameters, inputStream,
+					resource);
 			return JsonUtils.toObject(response, Metadata.class);
 		} catch (Exception e) {
 			// logger.error("Exception storing resource", e);
@@ -325,9 +327,31 @@ public class Filestorage {
 	 *            new resource content
 	 * @throws FilestorageException
 	 */
+	@Deprecated
 	public void updateResourceByUser(String authToken, String resourceId,
 			File resource) throws FilestorageException {
 		updateResource(authToken, resourceId, resource, USER_OPERATION);
+	}
+
+	/**
+	 * updates a resource
+	 * 
+	 * @param authToken
+	 *            user access token
+	 * @param accountId
+	 *            id of the user storage account
+	 * @param resourceId
+	 *            id of the resource to update
+	 * @param resource
+	 *            new resource content
+	 * @param inputStream
+	 *            inputstream of the file
+	 * @throws FilestorageException
+	 */
+	public void updateResourceByUser(String authToken, String resourceId,
+			File resource, InputStream inputStream) throws FilestorageException {
+		updateResource(authToken, resourceId, resource, inputStream,
+				USER_OPERATION);
 	}
 
 	/**
@@ -343,9 +367,30 @@ public class Filestorage {
 	 *            new resource content
 	 * @throws FilestorageException
 	 */
+	@Deprecated
 	public void updateResourceByApp(String authToken, String resourceId,
 			File resource) throws FilestorageException {
 		updateResource(authToken, resourceId, resource, APP_OPERATION);
+	}
+
+	/**
+	 * updates a resource
+	 * 
+	 * @param authToken
+	 *            client access token
+	 * @param accountId
+	 *            id of the user storage account
+	 * @param resourceId
+	 *            id of the resource to update
+	 * @param resource
+	 *            new resource content
+	 * @param inputStream
+	 * @throws FilestorageException
+	 */
+	public void updateResourceByApp(String authToken, String resourceId,
+			File resource, InputStream inputStream) throws FilestorageException {
+		updateResource(authToken, resourceId, resource, inputStream,
+				APP_OPERATION);
 	}
 
 	private void updateResource(String authToken, String resourceId,
@@ -355,6 +400,21 @@ public class Filestorage {
 			MultipartRemoteConnector.postJSON(serverUrl, RESOURCE
 					+ operationType + appId + "/" + resourceId, authToken,
 					multipartParam);
+		} catch (RemoteException e) {
+			// logger.error(
+			// String.format("Exception updating resource %s", resourceId),
+			// e);
+			throw new FilestorageException(e);
+		}
+	}
+
+	private void updateResource(String authToken, String resourceId,
+			File resource, InputStream inputStream, String operationType)
+			throws FilestorageException {
+		try {
+			MultipartRemoteConnector.postJSON(serverUrl, RESOURCE + "stream/"
+					+ operationType + appId + "/" + resourceId, authToken,
+					null, inputStream, resource);
 		} catch (RemoteException e) {
 			// logger.error(
 			// String.format("Exception updating resource %s", resourceId),
@@ -704,6 +764,18 @@ public class Filestorage {
 		return getMyResource(authToken, resourceId, APP_OPERATION, null);
 	}
 
+	/**
+	 * retrieves a user resource
+	 * 
+	 * @param authToken
+	 *            client access token
+	 * @param resourceId
+	 *            id of the resource
+	 * @param outputStream
+	 *            outputstream of the file
+	 * @return {@link Resource}
+	 * @throws FilestorageException
+	 */
 	public Resource getResourceByApp(String authToken, String resourceId,
 			OutputStream outputStream) throws FilestorageException {
 		return getMyResource(authToken, resourceId, APP_OPERATION, outputStream);
