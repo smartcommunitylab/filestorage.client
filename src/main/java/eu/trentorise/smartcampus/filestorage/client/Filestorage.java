@@ -161,7 +161,7 @@ public class Filestorage {
 	 *            id of the user storage account in which store the resource
 	 * @param createSocialData
 	 *            true to create social entity associated to the resource
-	 * @return
+	 * @return information about resources
 	 * @throws FilestorageException
 	 */
 	public Metadata storeResourceByApp(File resource, InputStream inputStream,
@@ -541,7 +541,7 @@ public class Filestorage {
 	 *            client access token
 	 * @param account
 	 *            {@link Account} data. Field {@link Account#appId} is required
-	 * @return
+	 * @return the account created
 	 * @throws FilestorageException
 	 */
 	public Account createAccountByApp(String authToken, Account account)
@@ -556,7 +556,7 @@ public class Filestorage {
 	 *            user access token
 	 * @param account
 	 *            {@link Account} data. Field {@link Account#appId} is required
-	 * @return
+	 * @return the account created
 	 * @throws FilestorageException
 	 */
 	public Account createAccountByUser(String authToken, Account account)
