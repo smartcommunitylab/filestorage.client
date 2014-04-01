@@ -29,10 +29,10 @@ public class Utils {
 		bos.close();
 		return bFile;
 	}
-
+	
 	public static void read(InputStream is, OutputStream outputStream)
 			throws IOException {
-
+		
 		byte[] buffer = new byte[2048 * 10000];
 		int byteReaded = 0;
 		while ((byteReaded = is.read(buffer, 0, buffer.length)) != -1) {

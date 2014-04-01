@@ -1202,11 +1202,11 @@ public class Filestorage {
 				while ((readed = in.read(buffer)) > 0) {
 					output.write(buffer, 0, readed);
 				}
+				in.close();
+			} else {
+				throw new IllegalArgumentException();
 			}
 		} catch (Exception e) {
-			// logger.error(
-			// String.format("Exception getting resource %s", resourceId),
-			// e);
 			throw new FilestorageException(e);
 		}
 	}
