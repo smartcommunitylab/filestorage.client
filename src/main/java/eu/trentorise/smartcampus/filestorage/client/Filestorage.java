@@ -1200,6 +1200,7 @@ public class Filestorage {
 				byte[] buffer = new byte[1024];
 				int readed = 0;
 				while ((readed = in.read(buffer)) > 0) {
+
 					output.write(buffer, 0, readed);
 				}
 				in.close();
