@@ -88,7 +88,7 @@ public abstract class ResourceRetriever {
 		HttpUriRequest request = null;
 		if (token.getUrl() != null && token.getMethodREST() != null) {
 			if (token.getMethodREST().equals("GET")) {
-				request = new HttpGet(token.getUrl());
+				request = new HttpGet((token.getUrl()));
 			} else if (token.getMethodREST().equals("POST")) {
 				request = new HttpPost(token.getUrl());
 			} else if (token.getMethodREST().equals("PUT")) {
@@ -105,7 +105,7 @@ public abstract class ResourceRetriever {
 			}
 			DefaultHttpClient httpclient = new DefaultHttpClient();
 			HttpResponse response = httpclient.execute(request);
-
+			
 			if (response.getStatusLine().getStatusCode() == 200) {
 				InputStream is = response.getEntity().getContent();
 				Utils.read(is, outputStream);

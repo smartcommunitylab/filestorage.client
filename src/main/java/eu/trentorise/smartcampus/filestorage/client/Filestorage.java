@@ -1220,6 +1220,9 @@ public class Filestorage {
 		case LOCAL:
 			retriever = new HttpResourceRetriever(serverUrl, appId);
 			break;
+		case GDRIVE:
+			retriever = new HttpResourceRetriever(serverUrl, appId);
+			break;
 		default:
 			throw new IllegalArgumentException(
 					"StorageType requested doesn't exist");
