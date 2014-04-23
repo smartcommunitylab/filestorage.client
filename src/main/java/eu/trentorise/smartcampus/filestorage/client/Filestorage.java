@@ -87,17 +87,13 @@ public class Filestorage {
 	 *            the user access token
 	 * @param accountId
 	 *            id of the user storage account in which store the resource
-	 * @param createSocialData
-	 *            true to create social entity associated to the resource
 	 * @return information about resources
 	 * @throws FilestorageException
 	 */
 	public Metadata storeResourceByUser(File resource, String authToken,
-			String accountId, boolean createSocialData)
-			throws FilestorageException {
+			String accountId) throws FilestorageException {
 
-		return storeResource(resource, authToken, accountId, createSocialData,
-				USER_OPERATION);
+		return storeResource(resource, authToken, accountId, USER_OPERATION);
 	}
 
 	/**
@@ -109,16 +105,12 @@ public class Filestorage {
 	 *            client access token
 	 * @param accountId
 	 *            id of the user storage account in which store the resource
-	 * @param createSocialData
-	 *            true to create social entity associated to the resource
 	 * @return information about resources
 	 * @throws FilestorageException
 	 */
 	public Metadata storeResourceByApp(File resource, String authToken,
-			String accountId, boolean createSocialData)
-			throws FilestorageException {
-		return storeResource(resource, authToken, accountId, createSocialData,
-				APP_OPERATION);
+			String accountId) throws FilestorageException {
+		return storeResource(resource, authToken, accountId, APP_OPERATION);
 	}
 
 	/**
@@ -130,18 +122,14 @@ public class Filestorage {
 	 *            client access token
 	 * @param accountId
 	 *            id of the user storage account in which store the resource
-	 * @param createSocialData
-	 *            true to create social entity associated to the resource
 	 * @return information about resources
 	 * @throws FilestorageException
 	 */
 	public Metadata storeResourceByApp(byte[] resourceContent,
 			String resourceName, String resourceContentType, String authToken,
-			String accountId, boolean createSocialData)
-			throws FilestorageException {
+			String accountId) throws FilestorageException {
 		return storeResource(resourceContent, resourceName,
-				resourceContentType, authToken, accountId, createSocialData,
-				APP_OPERATION);
+				resourceContentType, authToken, accountId, APP_OPERATION);
 	}
 
 	/**
@@ -153,45 +141,37 @@ public class Filestorage {
 	 *            user access token
 	 * @param accountId
 	 *            id of the user storage account in which store the resource
-	 * @param createSocialData
-	 *            true to create social entity associated to the resource
 	 * @return information about resources
 	 * @throws FilestorageException
 	 */
 	public Metadata storeResourceByUser(byte[] resourceContent,
 			String resourceName, String resourceContentType, String authToken,
-			String accountId, boolean createSocialData)
-			throws FilestorageException {
+			String accountId) throws FilestorageException {
 		return storeResource(resourceContent, resourceName,
-				resourceContentType, authToken, accountId, createSocialData,
-				USER_OPERATION);
+				resourceContentType, authToken, accountId, USER_OPERATION);
 	}
 
 	private Metadata storeResource(File resource, String authToken,
-			String accountId, boolean createSocialData, String operationType)
-			throws FilestorageException {
+			String accountId, String operationType) throws FilestorageException {
 		FileParam multipartParam = new FileParam(RESOURCE_PARAM_NAME, resource);
 		return storeResource(multipartParam, authToken, accountId,
-				createSocialData, operationType);
+				operationType);
 	}
 
 	private Metadata storeResource(byte[] resourceContent, String resourceName,
 			String resourceContentType, String authToken, String accountId,
-			boolean createSocialData, String operationType)
-			throws FilestorageException {
+			String operationType) throws FilestorageException {
 		ByteArrayParam multipartParam = new ByteArrayParam(RESOURCE_PARAM_NAME,
 				resourceName, resourceContentType, resourceContent);
 		return storeResource(multipartParam, authToken, accountId,
-				createSocialData, operationType);
+				operationType);
 	}
 
 	private Metadata storeResource(MultipartParam resource, String authToken,
-			String accountId, boolean createSocialData, String operationType)
-			throws FilestorageException {
+			String accountId, String operationType) throws FilestorageException {
 		try {
 
 			Map<String, Object> parameters = new HashMap<String, Object>();
-			parameters.put("createSocialData", createSocialData);
 
 			String response = MultipartRemoteConnector.postJSON(serverUrl,
 					RESOURCE + "create/" + operationType + appId + "/"
@@ -823,22 +803,21 @@ public class Filestorage {
 	 * creates resource metadata
 	 * 
 	 * @param authToken
+	 *            user authentication token
 	 * @param resource
+	 *            {@link Resource} from which create metadata
 	 * @param accountId
-	 * @param createSocialData
+	 *            id of account owner of metadata
 	 * @return metadata created
 	 * @throws FilestorageException
 	 */
 	public Metadata createMetadataByUser(String authToken, Resource resource,
-			String accountId, boolean createSocialData)
-			throws FilestorageException {
-		return createMetadata(authToken, resource, accountId, createSocialData,
-				USER_OPERATION);
+			String accountId) throws FilestorageException {
+		return createMetadata(authToken, resource, accountId, USER_OPERATION);
 	}
 
 	private Metadata createMetadata(String authToken, Resource resource,
-			String accountId, boolean createSocialData, String operationType)
-			throws FilestorageException {
+			String accountId, String operationType) throws FilestorageException {
 		try {
 			String uri = null;
 			if (operationType.equals(APP_OPERATION)) {
@@ -848,7 +827,6 @@ public class Filestorage {
 				uri = operationType + appId + "/" + accountId;
 			}
 			Map<String, Object> params = new HashMap<String, Object>();
-			params.put("createSocialData", createSocialData);
 			String response = MultipartRemoteConnector.postJSON(serverUrl,
 					METADATA + uri, JsonUtils.toJSON(resource), authToken,
 					params);

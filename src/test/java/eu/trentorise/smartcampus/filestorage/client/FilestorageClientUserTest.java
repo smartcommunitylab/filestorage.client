@@ -67,7 +67,7 @@ public class FilestorageClientUserTest {
 				.getResourceSample(TestConstants.RESOURCE_NAME);
 
 		Metadata meta = filestorage.storeResourceByUser(resource,
-				TestConstants.USER_AUTH_TOKEN, account.getId(), false);
+				TestConstants.USER_AUTH_TOKEN, account.getId());
 
 		try {
 			filestorage.getResourceByUser(TestConstants.USER2_AUTH_TOKEN,
@@ -200,14 +200,14 @@ public class FilestorageClientUserTest {
 		File resource = TestUtils
 				.getResourceSample(TestConstants.RESOURCE_NAME);
 		Metadata metadata = filestorage.storeResourceByUser(resource,
-				TestConstants.USER_AUTH_TOKEN, account.getId(), false);
+				TestConstants.USER_AUTH_TOKEN, account.getId());
 		Assert.assertEquals(TestConstants.FS_APPID, metadata.getAppId());
 		Assert.assertEquals(account.getId(), metadata.getAccountId());
 		Assert.assertTrue(metadata.getResourceId() != null);
 		boolean exceptionThrown = false;
 		try {
 			metadata = filestorage.storeResourceByUser(resource,
-					TestConstants.USER_AUTH_TOKEN, account.getId(), false);
+					TestConstants.USER_AUTH_TOKEN, account.getId());
 		} catch (FilestorageException e) {
 			exceptionThrown = true;
 		}
@@ -220,7 +220,7 @@ public class FilestorageClientUserTest {
 		Metadata metadata1 = filestorage.storeResourceByUser(resourceContent,
 				TestConstants.RESOURCE_CONTENT_TYPE,
 				TestConstants.RESOURCE_NAME_UPDATE,
-				TestConstants.USER_AUTH_TOKEN, account.getId(), false);
+				TestConstants.USER_AUTH_TOKEN, account.getId());
 
 		Assert.assertTrue(metadata1.getResourceId() != null);
 	}
@@ -240,14 +240,14 @@ public class FilestorageClientUserTest {
 		File resource = TestUtils
 				.getResourceSample(TestConstants.RESOURCE_NAME);
 		Metadata metadata = filestorage.storeResourceByUser(resource,
-				TestConstants.USER_AUTH_TOKEN, account.getId(), false);
+				TestConstants.USER_AUTH_TOKEN, account.getId());
 		Assert.assertEquals(TestConstants.FS_APPID, metadata.getAppId());
 		Assert.assertEquals(account.getId(), metadata.getAccountId());
 		Assert.assertTrue(metadata.getResourceId() != null);
 		boolean exceptionThrown = false;
 		try {
 			metadata = filestorage.storeResourceByUser(resource,
-					TestConstants.USER_AUTH_TOKEN, account.getId(), false);
+					TestConstants.USER_AUTH_TOKEN, account.getId());
 		} catch (FilestorageException e) {
 			exceptionThrown = true;
 		}
@@ -260,7 +260,7 @@ public class FilestorageClientUserTest {
 		Metadata metadata1 = filestorage.storeResourceByUser(resourceContent,
 				TestConstants.RESOURCE_CONTENT_TYPE,
 				TestConstants.RESOURCE_NAME_UPDATE,
-				TestConstants.USER_AUTH_TOKEN, account.getId(), false);
+				TestConstants.USER_AUTH_TOKEN, account.getId());
 
 		Assert.assertTrue(metadata1.getResourceId() != null);
 
