@@ -39,18 +39,18 @@ public class FilestorageClientAppTest {
 
 	@BeforeClass
 	public static void init() {
-		filestorage = new Filestorage(TestConstants.BASEURL,
-				TestConstants.APPID);
+		filestorage = new Filestorage(TestConstants.FILESTORAGE_ENDPOINT,
+				TestConstants.FS_APPID);
 	}
 
 	@Test
 	public void resources() throws SecurityException, FilestorageException,
 			URISyntaxException, IOException {
-		Storage storage = TestUtils.createStorage(TestConstants.APPID);
+		Storage storage = TestUtils.createStorage(TestConstants.FS_APPID);
 		storage = filestorage.createStorage(TestConstants.APP_AUTH_TOKEN,
 				storage);
-		Account account = TestUtils
-				.createAccount(storage, TestConstants.USERID);
+		Account account = TestUtils.createAccount(storage,
+				TestConstants.USERID1);
 		account = filestorage.createAccountByApp(TestConstants.APP_AUTH_TOKEN,
 				account);
 		int metadataSize = filestorage.getAllResourceMetadataByApp(
@@ -60,7 +60,7 @@ public class FilestorageClientAppTest {
 		Metadata metadata = filestorage.storeResourceByApp(resource,
 				TestConstants.APP_AUTH_TOKEN, account.getId(), false);
 
-		Assert.assertEquals(TestConstants.APPID, metadata.getAppId());
+		Assert.assertEquals(TestConstants.FS_APPID, metadata.getAppId());
 		Assert.assertEquals(account.getId(), metadata.getAccountId());
 		Assert.assertTrue(metadata.getResourceId() != null);
 		boolean exceptionThrown = false;
@@ -115,15 +115,16 @@ public class FilestorageClientAppTest {
 		if (storage != null) {
 			filestorage.deleteStorage(TestConstants.APP_AUTH_TOKEN);
 		}
-		
-		storage = TestUtils.createStorage(TestConstants.APPID);
-		
-		Storage newStorage = filestorage.createStorage(TestConstants.APP_AUTH_TOKEN, storage);
+
+		storage = TestUtils.createStorage(TestConstants.FS_APPID);
+
+		Storage newStorage = filestorage.createStorage(
+				TestConstants.APP_AUTH_TOKEN, storage);
 		Assert.assertNotNull(newStorage);
 		storage = filestorage.getStorage(TestConstants.APP_AUTH_TOKEN);
-		Assert.assertEquals(storage.getId(),newStorage.getId());
-		Assert.assertEquals(storage.getAppId(),newStorage.getAppId());
-		
+		Assert.assertEquals(storage.getId(), newStorage.getId());
+		Assert.assertEquals(storage.getAppId(), newStorage.getAppId());
+
 		String newName = "Change name";
 		storage.setName(newName);
 		storage = filestorage.updateStorage(TestConstants.APP_AUTH_TOKEN,
@@ -133,7 +134,8 @@ public class FilestorageClientAppTest {
 		Assert.assertTrue(reload.getName().equals(newName)
 				&& storage.getName().equals(newName));
 
-		Assert.assertTrue(filestorage.deleteStorage(TestConstants.APP_AUTH_TOKEN));
+		Assert.assertTrue(filestorage
+				.deleteStorage(TestConstants.APP_AUTH_TOKEN));
 		storage = filestorage.getStorage(TestConstants.APP_AUTH_TOKEN);
 		Assert.assertNull(storage);
 	}
@@ -160,11 +162,11 @@ public class FilestorageClientAppTest {
 		List<Account> accounts = filestorage
 				.getAccountsByApp(TestConstants.APP_AUTH_TOKEN);
 		int size = accounts.size();
-		Storage storage = TestUtils.createStorage(TestConstants.APPID);
+		Storage storage = TestUtils.createStorage(TestConstants.FS_APPID);
 		storage = filestorage.createStorage(TestConstants.APP_AUTH_TOKEN,
 				storage);
-		Account account = TestUtils
-				.createAccount(storage, TestConstants.USERID);
+		Account account = TestUtils.createAccount(storage,
+				TestConstants.USERID1);
 		account = filestorage.createAccountByApp(TestConstants.APP_AUTH_TOKEN,
 				account);
 		Assert.assertTrue(account != null && account.getId() != null);

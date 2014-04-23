@@ -18,10 +18,16 @@ package eu.trentorise.smartcampus.filestorage.client;
 public class TestConstants {
 
 	static final String USER_AUTH_TOKEN = "";
+	static final String USER2_AUTH_TOKEN = "";
+
 	static final String APP_AUTH_TOKEN = "";
 
-	static final String APPID = "mobileTemplate";
-	static final String BASEURL = "http://localhost:8088/smartcampus.filestorage";
+	static final String FS_APPID = "clientTest";
+	static final String SOCIAL_APPID = "space1";
+
+	static final String FILESTORAGE_ENDPOINT = "http://localhost:8080/core.filestorage";
+	static final String SOCIALSERVICE_ENDPOINT = "http://localhost:8080/core.social";
+
 	static final String RESOURCE_NAME = "tux.jpeg";
 	static final String RESOURCE_NAME_UPDATE = "tux1.png";
 	static final String RESOURCE_CONTENT_TYPE = "image/png";
@@ -29,6 +35,7 @@ public class TestConstants {
 	static final String USER_SECRET = "";
 	static final String APP_KEY = "";
 	static final String APP_SECRET = "";
-	static final String USERID = "1";
+	static final String USERID1 = "1";
+	static final String USERID2 = "2";
 
 }
