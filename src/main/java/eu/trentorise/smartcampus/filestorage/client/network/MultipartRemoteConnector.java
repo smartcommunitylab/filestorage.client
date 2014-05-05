@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.URLConnection;
 import java.util.Map;
 
 import org.apache.http.HttpEntity;
@@ -20,13 +21,6 @@ import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.util.EntityUtils;
-import org.apache.tika.exception.TikaException;
-import org.apache.tika.metadata.Metadata;
-import org.apache.tika.parser.AutoDetectParser;
-import org.apache.tika.parser.Parser;
-import org.apache.tika.sax.BodyContentHandler;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXException;
 
 import eu.trentorise.smartcampus.network.RemoteConnector;
 import eu.trentorise.smartcampus.network.RemoteException;
@@ -102,7 +96,7 @@ public class MultipartRemoteConnector extends RemoteConnector {
 		String queryString = generateQueryString(parameters);
 		final HttpResponse resp;
 		final HttpPost post = new HttpPost(host + service + queryString);
-		
+
 		post.setHeader(RH_ACCEPT, "application/json");
 		post.setHeader(RH_AUTH_TOKEN, bearer(token));
 
@@ -156,20 +150,8 @@ public class MultipartRemoteConnector extends RemoteConnector {
 			post.setEntity(reqEntity);
 			post.setHeader("filename", resource.getName());
 			post.setHeader("size", String.valueOf(resource.length()));
-			ContentHandler contenthandler = new BodyContentHandler();
-			Metadata metadata = new Metadata();
-			metadata.set(Metadata.RESOURCE_NAME_KEY, resource.getName());
-			Parser parser = new AutoDetectParser();
-			try {
-				parser.parse(inputStream, contenthandler, metadata);
-			} catch (SAXException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (TikaException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			post.setHeader("mimeType", metadata.get(Metadata.CONTENT_TYPE));
+			post.setHeader("mimeType",
+					URLConnection.guessContentTypeFromName(resource.getName()));
 			resp = getHttpClient().execute(post);
 			String response = EntityUtils.toString(resp.getEntity());
 			if (resp.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
