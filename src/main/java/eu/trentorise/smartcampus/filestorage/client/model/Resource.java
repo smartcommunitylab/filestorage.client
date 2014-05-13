@@ -45,6 +45,11 @@ public class Resource {
 	 */
 	private long size;
 
+	/**
+	 * file external id
+	 */
+	private String externalId;
+
 	public String getName() {
 		return name;
 	}
@@ -83,6 +88,14 @@ public class Resource {
 
 	public void setSize(long size) {
 		this.size = size;
+	}
+
+	public String getExternalId() {
+		return externalId;
+	}
+
+	public void setExternalId(String externalId) {
+		this.externalId = externalId;
 	}
 
 }
